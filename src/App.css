@@ -1,22 +1,81 @@
+body {
+  /* background: url(https://dyllonmisc.b-cdn.net/supermarket-tracker/nrd-D6Tu_L3chLE-unsplash-web.jpg); */
+  background-size: cover;
+  background-position: center;
+}
+
 .App {
   text-align: center;
 }
 
+.card {
+  background: white;
+}
+
 .input-text {
-  border: 2px grey solid;
+  height: 24px;
+  width: 80px;
+  margin: 0 6px;
+  padding: 0.4em 0.4em;
+  font-size: 1rem;
+  border: 0;
+  border-bottom: 2px grey solid;
+}
+
+.input-text::selection {
+  /* background-color: #30bced; */
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px rgba(102, 175, 233, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+.input-button {
+  cursor: pointer;
+  border: 0;
+  background: #3454d1;
+  font-family: Poppins;
+  color: white;
+  height: 32px;
+  width: 80px;
   border-radius: 4px;
 }
 
+.input-button:hover,
+.input-button:focus {
+}
+
 .DeliveryStatusItems {
-  margin: 32px 0 0 0;
+  margin: 12px 0 0 0;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .DeliveryStatusItem-Item {
-  margin: 24px;
-  border: 2px grey solid;
+  background: white;
+  margin: 12px;
+  padding: 0 24px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 46px -8px rgba(76, 76, 76, 0.2);
+
   width: 100%;
   max-width: 400px;
+
+  text-align: left;
+
+  display: flex;
+}
+
+.DeliveryStatusItem-Item .left-column {
+  flex: 1;
+  padding-bottom: 8px;
+}
+
+.DeliveryStatusItem-Item .right-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

@@ -8,6 +8,8 @@ import DeliveryStatusItem from "./components/DeliveryStatusItem";
 
 function App() {
   const [postCodeInput, setPostCodeInput] = useState("792416"); // live input
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [requestedPostCode, setRequestedPostCode] = useState("");
 
   // ntuc
   const [isNtucLoading, setNtucLoading] = useState(false);
@@ -30,15 +32,18 @@ function App() {
     e.preventDefault();
     // request time!
     console.log("postCode", postCodeInput);
+    setFormSubmitted(true);
+
     setNtucLoading(true);
     setShengShongLoading(true);
     setColdStorageLoading(true);
 
-    // todo: set the other supermarkets as laoding too
+    const postCode = postCodeInput;
+    setRequestedPostCode(postCode);
 
-    reqNtuc(postCodeInput);
-    reqShengShiong(postCodeInput);
-    reqColdStorage(postCodeInput);
+    reqNtuc(postCode);
+    reqShengShiong(postCode);
+    reqColdStorage(postCode);
   };
 
   const reqNtuc = (postCode) => {
@@ -142,39 +147,33 @@ function App() {
 
   return (
     <div className="App">
-      <h1>React Supermarket Tracker</h1>
-      <h4>Enter your post code:</h4>
+      <div className="card">
+        <h1>React Supermarket Tracker</h1>
+        <h4 style={{ marginBottom: "8px" }}>Enter your post code:</h4>
 
-      <form className="form" onSubmit={handleFormSubmit}>
-        <label>
-          Post Code
-          <input
-            className="input-text"
-            type="text"
-            name="post code"
-            value={postCodeInput}
-            onChange={(e) => setPostCodeInput(e.target.value)}
-          />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+        <form className="form" onSubmit={handleFormSubmit}>
+          <label>
+            Post Code:
+            <input
+              className="input-text"
+              type="text"
+              name="post code"
+              value={postCodeInput}
+              onChange={(e) => setPostCodeInput(e.target.value)}
+            />
+          </label>
+          <input className="input-button" type="submit" value="Submit" />
+        </form>
+      </div>
 
-      {(isNtucLoading || isShengShiongLoading || isColdStorageLoading) && (
-        <div className="loadingContainer">
-          <Loader
-            type="TailSpin"
-            color="#00BFFF"
-            height={50}
-            width={50}
-            // timeout={3000} //3 secs
-          />
-          <p>asking supermarkets...</p>
-        </div>
+      {requestedPostCode && (
+        <h2>Delivery Slot Check for S{requestedPostCode}</h2>
       )}
 
       <div className="DeliveryStatusItems">
         <DeliveryStatusItem
-          name="NTUC"
+          name="NTUC FairPrice"
+          formSubmitted={formSubmitted}
           loading={isNtucLoading}
           res={ntucSlotRes}
           dataCheck={ntucSlotRes && ntucSlotRes.data.available}
@@ -183,6 +182,7 @@ function App() {
 
         <DeliveryStatusItem
           name="Sheng Shiong"
+          formSubmitted={formSubmitted}
           loading={isShengShiongLoading}
           res={shengShiongRes}
           dataCheck={
@@ -193,6 +193,7 @@ function App() {
 
         <DeliveryStatusItem
           name="Cold Storage"
+          formSubmitted={formSubmitted}
           loading={isColdStorageLoading}
           res={coldStorageRes}
           dataCheck={coldStorageRes && coldStorageRes.earliest.available}
