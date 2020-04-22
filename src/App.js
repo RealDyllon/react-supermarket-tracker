@@ -51,7 +51,7 @@ function App() {
           console.log("ntucStoreRes", result);
           setNtucStoreRes(result);
 
-          const storeId = result && result.data.store.id;
+          const storeId = result && result.data && result.data.store.id;
           setNtucStoreId(storeId);
 
           console.log("ntuc storeId", storeId);
@@ -172,41 +172,32 @@ function App() {
         </div>
       )}
 
-      <DeliveryStatusItem
-        name="NTUC"
-        loading={isNtucLoading}
-        res={ntucSlotRes}
-        error={ntucSlotErr}
-      />
+      <div className="DeliveryStatusItems">
+        <DeliveryStatusItem
+          name="NTUC"
+          loading={isNtucLoading}
+          res={ntucSlotRes}
+          dataCheck={ntucSlotRes && ntucSlotRes.data.available}
+          error={ntucSlotErr}
+        />
 
-      <div>
-        {!isNtucLoading &&
-          (!ntucSlotErr
-            ? ntucSlotRes &&
-              (ntucSlotRes.data.available
-                ? "NTUC Delivery Slot Available =D"
-                : "NTUC Delivery Slot Not Available :(")
-            : `NTUC API Error - ${ntucSlotErr}`)}
-      </div>
+        <DeliveryStatusItem
+          name="Sheng Shiong"
+          loading={isShengShiongLoading}
+          res={shengShiongRes}
+          dataCheck={
+            shengShiongRes && shengShiongRes.result !== "No more timeslots."
+          }
+          error={shengShiongErr}
+        />
 
-      <div>
-        {!isShengShiongLoading &&
-          (!shengShiongErr
-            ? shengShiongRes &&
-              (shengShiongRes.result !== "No more timeslots."
-                ? "Sheng Shiong Delivery Slot Available =D"
-                : "Sheng Shiong Delivery Slot Not Available :(")
-            : `Sheng Shiong API Error - ${shengShiongErr}`)}
-      </div>
-
-      <div>
-        {!isColdStorageLoading &&
-          (!coldStorageErr
-            ? coldStorageRes &&
-              (coldStorageRes.earliest.available
-                ? "Cold Storage Delivery Slot Available =D"
-                : "Cold Storage Delivery Slot Not Available :(")
-            : `Cold Storage API Error - ${coldStorageErr}`)}
+        <DeliveryStatusItem
+          name="Cold Storage"
+          loading={isColdStorageLoading}
+          res={coldStorageRes}
+          dataCheck={coldStorageRes && coldStorageRes.earliest.available}
+          error={coldStorageErr}
+        />
       </div>
     </div>
   );

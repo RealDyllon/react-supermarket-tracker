@@ -6,3 +6,17 @@
   border: 2px grey solid;
   border-radius: 4px;
 }
+
+.DeliveryStatusItems {
+  margin: 32px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.DeliveryStatusItem-Item {
+  margin: 24px;
+  border: 2px grey solid;
+  width: 100%;
+  max-width: 400px;
+}

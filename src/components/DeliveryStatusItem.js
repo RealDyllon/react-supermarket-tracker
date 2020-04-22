@@ -1,23 +1,30 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from "react";
+import PropTypes from "prop-types";
 
-const DeliveryStatusItem = props => {
+const Item = (props) => {
   return (
-    <div>
+    <div className="DeliveryStatusItem-Item">
       <h3>{props.name}</h3>
-      {!props.isLoading &&
-          (!props.error
-            ? props.res &&
-              (props.res.data.available
-                ? "Slot Available =D"
-                : "Slot Not Available :(")
-            : `API Error - ${props.error}`)}
+      <p>{props.avaliable ? "Slot Available =D" : "Slot Not Available :("}</p>
     </div>
-  )
-}
+  );
+};
 
-DeliveryStatusItem.propTypes = {
+const DeliveryStatusItem = (props) => {
+  return (
+    <>
+      {!props.error
+        ? props.res &&
+          (props.dataCheck ? (
+            <Item name={props.name} available />
+          ) : (
+            <Item name={props.name} />
+          ))
+        : `API Error - ${props.error}`}
+    </>
+  );
+};
 
-}
+DeliveryStatusItem.propTypes = {};
 
-export default DeliveryStatusItem
+export default DeliveryStatusItem;
