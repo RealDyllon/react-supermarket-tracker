@@ -7,7 +7,7 @@ import Loader from "react-loader-spinner";
 import DeliveryStatusItem from "./components/DeliveryStatusItem";
 
 function App() {
-  const [postCodeInput, setPostCodeInput] = useState("792416"); // live input
+  const [postCodeInput, setPostCodeInput] = useState(""); // live input
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [requestedPostCode, setRequestedPostCode] = useState("");
 

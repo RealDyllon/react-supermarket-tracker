@@ -20,6 +20,7 @@ body {
   font-size: 1rem;
   border: 0;
   border-bottom: 2px grey solid;
+  -webkit-appearance: none;
 }
 
 .input-text::selection {
@@ -41,6 +42,7 @@ body {
   height: 32px;
   width: 80px;
   border-radius: 4px;
+  -webkit-appearance: none;
 }
 
 .input-button:hover,
