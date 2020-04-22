@@ -148,7 +148,7 @@ function App() {
   return (
     <div className="App">
       <div className="card">
-        <h1>React Supermarket Tracker</h1>
+        <h1>Supermarket Tracker</h1>
         <h4 style={{ marginBottom: "8px" }}>Enter your post code:</h4>
 
         <form className="form" onSubmit={handleFormSubmit}>
@@ -167,7 +167,7 @@ function App() {
       </div>
 
       {requestedPostCode && (
-        <h2>Delivery Slot Check for S{requestedPostCode}</h2>
+        <h2>Online Delivery Slot Check for S{requestedPostCode}:</h2>
       )}
 
       <div className="DeliveryStatusItems">

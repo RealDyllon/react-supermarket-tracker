@@ -14,21 +14,20 @@ body {
 
 .input-text {
   height: 24px;
-  width: 80px;
+  width: 100px;
   margin: 0 6px;
   padding: 0.4em 0.4em;
   font-size: 1rem;
   border: 0;
+  border-radius: 0;
   border-bottom: 2px grey solid;
-  -webkit-appearance: none;
+  appearance: none;
 }
 
 .input-text::selection {
   /* background-color: #30bced; */
   border-color: #66afe9;
   outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
-    0 0 8px rgba(102, 175, 233, 0.6);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
     0 0 8px rgba(102, 175, 233, 0.6);
 }
@@ -42,11 +41,7 @@ body {
   height: 32px;
   width: 80px;
   border-radius: 4px;
-  -webkit-appearance: none;
-}
-
-.input-button:hover,
-.input-button:focus {
+  appearance: none;
 }
 
 .DeliveryStatusItems {
@@ -69,6 +64,13 @@ body {
   text-align: left;
 
   display: flex;
+}
+
+@media (max-width: 448px) {
+  .DeliveryStatusItem-Item {
+    width: calc(100% - 100px);
+    margin: 12px 24px;
+  }
 }
 
 .DeliveryStatusItem-Item .left-column {

@@ -44,7 +44,7 @@ const DeliveryStatusItem = (props) => {
           <div className="left-column">
             <h3>{props.name}</h3>
 
-            {props.loading ? (
+            {props.loading ? (  
               <p>Checking timetables...</p>
             ) : props.error ? (
               props.error // return the error text
