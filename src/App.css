@@ -20,7 +20,7 @@ body {
 .title-card {
   margin: 12px 0;
   background: white;
-  padding: 0 24px 24px 24px;
+  padding: 0 24px;
   border-radius: 8px;
   /* box-shadow: 0px 0px 46px -8px rgba(76, 76, 76, 0.2); */
   transition: all 0.5s;
@@ -46,7 +46,7 @@ body {
     0 0 8px rgba(102, 175, 233, 0.6);
 }
 
-@media (max-width: 340px) {
+@media (max-width: 345px) {
   .hide-label-on-xs {
     color: red;
     display: none;
@@ -66,7 +66,7 @@ body {
 }
 
 .DeliveryStatusItems {
-  margin: 12px 0 0 0;
+  margin: 0px 0 0 0;
   padding-bottom: 24px;
   display: flex;
   flex-direction: column;

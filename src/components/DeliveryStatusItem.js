@@ -39,8 +39,12 @@ const ErrorIcon = () => (
 const DeliveryStatusItem = (props) => {
   return (
     <div
+      onClick={() =>
+        true ? window.open(props.shoppingCart, "_blank", "noopener") : null
+      }
       className="DeliveryStatusItem-Item transition-ease-out-quad"
       style={{
+        cursor: true ? "pointer" : "default",
         visibility: !props.formSubmitted ? "collapse" : "visible",
         opacity: !props.formSubmitted ? 0 : 1,
       }}
@@ -58,9 +62,20 @@ const DeliveryStatusItem = (props) => {
           props.error // return the error text
         ) : props.res ? (
           props.dataCheck ? (
-            <p>Delivery Avaliable!</p>
+            <>
+              <p style={{ marginBottom: 0 }}>Delivery Avaliable!</p>
+              <p
+                style={{
+                  display: "inline-block",
+                  marginBottom: 8,
+                  color: "blue",
+                }}
+              >
+                Go to shopping cart
+              </p>
+            </>
           ) : (
-            <p>Delivery Unvailable</p>
+            <p>Delivery Unavailable</p>
           )
         ) : (
           <p>Internal error: props.res is falsy!</p>

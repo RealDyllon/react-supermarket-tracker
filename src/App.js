@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import ReactGA from "react-ga";
+import SnackbarProvider from "react-simple-snackbar";
+
 //
 import "./App.css";
 
 // for spinner
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import DeliveryStatusItem from "./components/DeliveryStatusItem";
+import DeliveryStatusItemStatic from "./components/DeliveryStatusItemStatic";
+import TitleCard from "./components/TitleCard";
+
+const delay = require("delay");
 
 ReactGA.initialize("UA-159939917-3");
 ReactGA.pageview(window.location.pathname + window.location.search);
@@ -20,6 +26,10 @@ function App() {
     "localStoragePostCodeRememberPref",
     localStoragePostCodeRememberPref
   );
+
+  // global
+  const [isItemCardsVisible, setItemCardsVisible] = useState(false);
+  const [isPostCodeInvalid, setPostCodeInvalid] = useState(true);
 
   // form live inputs
   const [postCodeInput, setPostCodeInput] = useState(
@@ -60,31 +70,49 @@ function App() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
     // request time!
     console.log("postCode", postCodeInput);
-    setFormSubmitted(true);
 
-    setNtucLoading(true);
-    setShengShongLoading(true);
-    setColdStorageLoading(true);
-    setGiantLoading(true);
+    if (postCodeInput.length === 6) {
+      setPostCodeInvalid(false);
 
-    const postCode = postCodeInput;
+      setItemCardsVisible(true);
 
-    const rememberPostCodePref = isRememberPostCode;
+      setNtucLoading(true);
+      setShengShongLoading(true);
+      setColdStorageLoading(true);
+      setGiantLoading(true);
 
-    if (rememberPostCodePref) {
-      localStorage.setItem("postCode", postCode);
-      localStorage.setItem("postCodeRememberPref", 1); //true
+      delayFunction(); // setFormSubmitted(true);
+
+      const postCode = postCodeInput;
+
+      const rememberPostCodePref = isRememberPostCode;
+
+      if (rememberPostCodePref) {
+        localStorage.setItem("postCode", postCode);
+        localStorage.setItem("postCodeRememberPref", 1); //true
+      } else {
+        localStorage.removeItem("postCode");
+        localStorage.removeItem("postCodeRememberPref"); //true
+      }
+
+      reqNtuc(postCode);
+      reqShengShiong(postCode);
+      reqColdStorage(postCode);
+      reqGiant(postCode);
     } else {
-      localStorage.removeItem("postCode");
-      localStorage.removeItem("postCodeRememberPref"); //true
+      console.log("POSTCODE INVALID!!!");
+      setPostCodeInvalid(true);
     }
+  };
 
-    reqNtuc(postCode);
-    reqShengShiong(postCode);
-    reqColdStorage(postCode);
-    reqGiant(postCode);
+  const delayFunction = async () => {
+    await delay(100);
+
+    // Executed 100 milliseconds later
+    setFormSubmitted(true);
   };
 
   const reqNtuc = (postCode) => {
@@ -209,81 +237,68 @@ function App() {
 
   return (
     <div className="App">
-      <div className="title-card">
-        <h1 className="nunito-sans" style={{ marginBottom: 0 }}>
-          Supermarket Tracker
-        </h1>
-        <h4
-          className="nunito-sans"
-          style={{ marginTop: 8, marginBottom: "8px" }}
-        >
-          Enter your post code:
-        </h4>
-
-        <form className="form" onSubmit={handleFormSubmit}>
-          <label>
-            <span className="hide-label-on-xs">Post Code:</span>
-            <input
-              className="input-text"
-              type="text"
-              name="post code"
-              value={postCodeInput}
-              onChange={(e) => setPostCodeInput(e.target.value)}
-            />
-          </label>
-          <input className="input-button" type="submit" value="Submit" />
-          <label style={{ display: "block", marginTop: 8 }}>
-            <input
-              className="input-checkbox"
-              type="checkbox"
-              name="remember post code"
-              checked={isRememberPostCode}
-              onChange={() => setRememberPostCode(!isRememberPostCode)}
-            />
-            <span>Remember Post Code</span>
-          </label>
-        </form>
-      </div>
-
-      <div className="DeliveryStatusItems">
-        <DeliveryStatusItem
-          name="NTUC FairPrice"
-          formSubmitted={formSubmitted}
-          loading={isNtucLoading}
-          res={ntucSlotRes}
-          dataCheck={ntucSlotRes && ntucSlotRes.data.available}
-          error={ntucSlotErr}
+      <SnackbarProvider>
+        <TitleCard
+          handleFormSubmit={handleFormSubmit}
+          postCodeInput={postCodeInput}
+          setPostCodeInput={setPostCodeInput}
+          isRememberPostCode={isRememberPostCode}
+          setRememberPostCode={setRememberPostCode}
         />
+      </SnackbarProvider>
 
-        <DeliveryStatusItem
-          name="Sheng Shiong"
-          formSubmitted={formSubmitted}
-          loading={isShengShiongLoading}
-          res={shengShiongRes}
-          dataCheck={
-            shengShiongRes && shengShiongRes.result !== "No more timeslots."
-          }
-          error={shengShiongErr}
-        />
+      {isItemCardsVisible && (
+        <div className="DeliveryStatusItems">
+          <DeliveryStatusItem
+            name="NTUC FairPrice"
+            formSubmitted={formSubmitted}
+            loading={isNtucLoading}
+            res={ntucSlotRes}
+            dataCheck={ntucSlotRes && ntucSlotRes.data.available}
+            error={ntucSlotErr}
+            shoppingCart="https://www.fairprice.com.sg/cart"
+          />
 
-        <DeliveryStatusItem
-          name="Cold Storage"
-          formSubmitted={formSubmitted}
-          loading={isColdStorageLoading}
-          res={coldStorageRes}
-          dataCheck={coldStorageRes && coldStorageRes.earliest.available}
-          error={coldStorageErr}
-        />
+          <DeliveryStatusItem
+            name="Sheng Shiong"
+            formSubmitted={formSubmitted}
+            loading={isShengShiongLoading}
+            res={shengShiongRes}
+            dataCheck={
+              shengShiongRes && shengShiongRes.result !== "No more timeslots."
+            }
+            error={shengShiongErr}
+            shoppingCart="https://www.allforyou.sg/cart"
+          />
 
-        <DeliveryStatusItem
-          name="Giant"
-          formSubmitted={formSubmitted}
-          loading={isGiantLoading}
-          res={giantRes}
-          dataCheck={giantRes && giantRes.earliest.available}
-          error={giantErr}
-        />
-      </div>
+          <DeliveryStatusItem
+            name="Cold Storage"
+            formSubmitted={formSubmitted}
+            loading={isColdStorageLoading}
+            res={coldStorageRes}
+            dataCheck={coldStorageRes && coldStorageRes.earliest.available}
+            error={coldStorageErr}
+            shoppingCart="https://coldstorage.com.sg/checkout/cart"
+          />
+
+          <DeliveryStatusItem
+            name="Giant"
+            formSubmitted={formSubmitted}
+            loading={isGiantLoading}
+            res={giantRes}
+            dataCheck={giantRes && giantRes.earliest.available}
+            error={giantErr}
+            shoppingCart="https://giant.sg/checkout/cart"
+          />
+
+          <DeliveryStatusItemStatic
+            name="Redmart"
+            site="redmart.com"
+            href="https://redmart-delivery-schedule.lazada.sg"
+            formSubmitted={formSubmitted}
+          />
+        </div>
+      )}
     </div>
   );
 }
