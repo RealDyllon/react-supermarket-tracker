@@ -28,6 +28,11 @@ function App() {
   const [coldStorageRes, setColdStorageRes] = useState(null);
   const [coldStorageErr, setColdStorageErr] = useState(null);
 
+  // giant
+  const [isGiantLoading, setGiantLoading] = useState(false);
+  const [giantRes, setGiantRes] = useState(null);
+  const [giantErr, setGiantErr] = useState(null);
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     // request time!
@@ -37,6 +42,7 @@ function App() {
     setNtucLoading(true);
     setShengShongLoading(true);
     setColdStorageLoading(true);
+    setGiantLoading(true);
 
     const postCode = postCodeInput;
     setRequestedPostCode(postCode);
@@ -44,6 +50,7 @@ function App() {
     reqNtuc(postCode);
     reqShengShiong(postCode);
     reqColdStorage(postCode);
+    reqGiant(postCode);
   };
 
   const reqNtuc = (postCode) => {
@@ -145,15 +152,38 @@ function App() {
       );
   };
 
+  const reqGiant = (postCode) => {
+    fetch(
+      `https://njkwnb0dok.execute-api.ap-southeast-1.amazonaws.com/default/giant-delivery?postcode=${postCode}`
+    )
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          console.log("giantRes", result);
+          setGiantLoading(false);
+          setGiantRes(result);
+        },
+
+        (error) => {
+          console.error("giantRes", error);
+          setGiantLoading(false);
+          setGiantErr(error);
+          setGiantRes(error);
+        }
+      );
+  };
+
   return (
     <div className="App">
-      <div className="card">
-        <h1>Supermarket Tracker</h1>
+      <div className="title-card">
+        <h1 className="nunito-sans" style={{}}>
+          Supermarket Tracker
+        </h1>
         <h4 style={{ marginBottom: "8px" }}>Enter your post code:</h4>
 
         <form className="form" onSubmit={handleFormSubmit}>
           <label>
-            Post Code:
+            <span>Post Code:</span>
             <input
               className="input-text"
               type="text"
@@ -165,10 +195,6 @@ function App() {
           <input className="input-button" type="submit" value="Submit" />
         </form>
       </div>
-
-      {requestedPostCode && (
-        <h2>Online Delivery Slot Check for S{requestedPostCode}:</h2>
-      )}
 
       <div className="DeliveryStatusItems">
         <DeliveryStatusItem
@@ -198,6 +224,15 @@ function App() {
           res={coldStorageRes}
           dataCheck={coldStorageRes && coldStorageRes.earliest.available}
           error={coldStorageErr}
+        />
+
+        <DeliveryStatusItem
+          name="Giant"
+          formSubmitted={formSubmitted}
+          loading={isGiantLoading}
+          res={giantRes}
+          dataCheck={giantRes && giantRes.earliest.available}
+          error={giantErr}
         />
       </div>
     </div>

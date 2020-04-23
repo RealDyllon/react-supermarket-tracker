@@ -10,7 +10,7 @@ const NotAvaliableIcon = () => (
   <IconContext.Provider
     value={{ color: "#f08e38", size: 42, className: "react-icons-icon" }}
   >
-    <div>
+    <div style={{ paddingTop: 6.4 }}>
       <FaTimes />
     </div>
   </IconContext.Provider>
@@ -20,7 +20,7 @@ const AvailableIcon = () => (
   <IconContext.Provider
     value={{ color: "#63d880", size: 42, className: "react-icons-icon" }}
   >
-    <div>
+    <div style={{ paddingTop: 6.4 }}>
       <FaCheck />
     </div>
   </IconContext.Provider>
@@ -30,7 +30,7 @@ const ErrorIcon = () => (
   <IconContext.Provider
     value={{ color: "#e14337", size: 42, className: "react-icons-icon" }}
   >
-    <div>
+    <div style={{ paddingTop: 6.4 }}>
       <FaExclamationTriangle />
     </div>
   </IconContext.Provider>
@@ -38,50 +38,56 @@ const ErrorIcon = () => (
 
 const DeliveryStatusItem = (props) => {
   return (
-    <>
-      {props.formSubmitted && (
-        <div className="DeliveryStatusItem-Item">
-          <div className="left-column">
-            <h3>{props.name}</h3>
+    <div
+      className="DeliveryStatusItem-Item transition-ease-out-quad"
+      style={{
+        visibility: !props.formSubmitted ? "collapse" : "visible",
+        opacity: !props.formSubmitted ? 0 : 1,
+      }}
+    >
+      <div className="left-column">
+        <h3 style={{ marginBottom: 0 }}>{props.name}</h3>
 
-            {props.loading ? (  
-              <p>Checking timetables...</p>
-            ) : props.error ? (
-              props.error // return the error text
-            ) : props.res ? (
-              props.dataCheck ? (
-                <p>Delivery Slot Avaliable</p>
-              ) : (
-                <p>Delivery Slot Not Available</p>
-              )
-            ) : (
-              <p>Internal error: props.res is falsy!</p>
-            )}
-          </div>
-          <div className="right-column">
-            {props.loading ? (
-              <Loader
-                type="TailSpin"
-                color="#00BFFF"
-                height={32}
-                width={32}
-                // timeout={3000} //3 secs
-              />
-            ) : props.error ? (
-              <ErrorIcon />
-            ) : props.res ? (
-              props.dataCheck ? (
-                <AvailableIcon />
-              ) : (
-                <NotAvaliableIcon />
-              )
-            ) : (
-              <ErrorIcon />
-            )}
-          </div>
-        </div>
-      )}
-    </>
+        <p style={{ visibility: "hidden", height: 0, margin: 0 }}>
+          Delivery Slot Avaliable
+        </p>
+
+        {props.loading ? (
+          <p>Checking timetables...</p>
+        ) : props.error ? (
+          props.error // return the error text
+        ) : props.res ? (
+          props.dataCheck ? (
+            <p>Delivery Avaliable!</p>
+          ) : (
+            <p>Delivery Unvailable</p>
+          )
+        ) : (
+          <p>Internal error: props.res is falsy!</p>
+        )}
+      </div>
+      <div className="right-column">
+        {props.loading ? (
+          <Loader
+            type="TailSpin"
+            color="#00BFFF"
+            height={42}
+            width={42}
+            // timeout={3000} //3 secs
+          />
+        ) : props.error ? (
+          <ErrorIcon />
+        ) : props.res ? (
+          props.dataCheck ? (
+            <AvailableIcon />
+          ) : (
+            <NotAvaliableIcon />
+          )
+        ) : (
+          <ErrorIcon />
+        )}
+      </div>
+    </div>
   );
 };
 
