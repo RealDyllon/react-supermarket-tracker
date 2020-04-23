@@ -91,6 +91,13 @@ const DeliveryStatusItem = (props) => {
   );
 };
 
-DeliveryStatusItem.propTypes = {};
+DeliveryStatusItem.propTypes = {
+  formSubmitted: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
+  res: PropTypes.object,
+  dataCheck: PropTypes.bool,
+};
 
 export default DeliveryStatusItem;

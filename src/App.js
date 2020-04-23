@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 // for spinner
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from "react-loader-spinner";
 import DeliveryStatusItem from "./components/DeliveryStatusItem";
 
 function App() {
@@ -27,15 +26,15 @@ function App() {
 
   // form submission
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [requestedPostCode, setRequestedPostCode] = useState("");
-  const [requestedRememberPostCode, setRequestedRememberPostCode] = useState(
-    false
-  );
+  // const [requestedPostCode, setRequestedPostCode] = useState("");
+  // const [requestedRememberPostCode, setRequestedRememberPostCode] = useState(
+  //   false
+  // );
 
   // ntuc
   const [isNtucLoading, setNtucLoading] = useState(false);
-  const [ntucStoreRes, setNtucStoreRes] = useState(null);
-  const [ntucStoreId, setNtucStoreId] = useState(null);
+  const [ntucStoreRes, setNtucStoreRes] = useState(null); // eslint-disable-line no-unused-vars
+  const [ntucStoreId, setNtucStoreId] = useState(null); // eslint-disable-line no-unused-vars
   const [ntucSlotRes, setNtucSlotRes] = useState(null);
   const [ntucSlotErr, setNtucSlotErr] = useState(null);
 
@@ -66,7 +65,6 @@ function App() {
     setGiantLoading(true);
 
     const postCode = postCodeInput;
-    setRequestedPostCode(postCode);
 
     const rememberPostCodePref = isRememberPostCode;
 
