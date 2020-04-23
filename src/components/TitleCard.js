@@ -60,7 +60,7 @@ const TitleCard = (props) => {
               props.setRememberPostCode(!props.isRememberPostCode)
             }
           />
-          <span>Remember my Post Code</span>
+          <span>Remember my Postal Code</span>
         </label>
       </form>
     </div>
