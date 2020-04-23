@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReactGA from "react-ga";
 import SnackbarProvider from "react-simple-snackbar";
+import { FaHeart } from "react-icons/fa";
 
 //
 import "./App.css";
@@ -10,6 +11,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import DeliveryStatusItem from "./components/DeliveryStatusItem";
 import DeliveryStatusItemStatic from "./components/DeliveryStatusItemStatic";
 import TitleCard from "./components/TitleCard";
+import { IconContext } from "react-icons";
 
 const delay = require("delay");
 
@@ -52,6 +54,7 @@ function App() {
   const [ntucStoreId, setNtucStoreId] = useState(null); // eslint-disable-line no-unused-vars
   const [ntucSlotRes, setNtucSlotRes] = useState(null);
   const [ntucSlotErr, setNtucSlotErr] = useState(null);
+  const [isNtucUnserviceable, setNtucUnserviceable] = useState(false)
 
   // sheng shiong
   const [isShengShiongLoading, setShengShongLoading] = useState(false);
@@ -74,7 +77,7 @@ function App() {
     // request time!
     console.log("postCode", postCodeInput);
 
-    if (postCodeInput.length === 6) {
+    if (postCodeInput.length === 6 && postCodeInput.substring(1) !== 0) {
       setPostCodeInvalid(false);
 
       setItemCardsVisible(true);
@@ -128,25 +131,33 @@ function App() {
           const storeId = result && result.data && result.data.store.id;
           setNtucStoreId(storeId);
 
-          console.log("ntuc storeId", storeId);
+          if (storeId) {
+            console.log("ntuc storeId", storeId);
 
-          fetch(
-            `https://website-api.omni.fairprice.com.sg/api/slot-availability?address[pincode]=${postCode}&storeId=${storeId}`
-          )
-            .then((res) => res.json())
-            .then(
-              (result) => {
-                setNtucLoading(false);
-                setNtucSlotRes(result);
-                console.log("ntucSlotRes", result);
-              },
-              (error) => {
-                setNtucLoading(false);
-                // setNtucSlotRes(error);
-                setNtucSlotErr(error);
-                console.error("ntucSlotRes", error);
-              }
-            );
+            fetch(
+              `https://website-api.omni.fairprice.com.sg/api/slot-availability?address[pincode]=${postCode}&storeId=${storeId}`
+            )
+              .then((res) => res.json())
+              .then(
+                (result) => {
+                  setNtucLoading(false);
+                  setNtucSlotRes(result);
+                  console.log("ntucSlotRes", result);
+                },
+                (error) => {
+                  setNtucLoading(false);
+                  // setNtucSlotRes(error);
+                  setNtucSlotErr(error);
+                  console.error("ntucSlotRes", error);
+                }
+              );
+          } else {
+            setNtucUnserviceable(true)
+            setNtucLoading(false);
+            console.log("ntucSlotRes", "NTUC does not serve this area omg");
+          }
+
+         
         },
         (error) => {
           setNtucStoreRes(error);
@@ -237,69 +248,85 @@ function App() {
 
   return (
     <div className="App">
-      <SnackbarProvider>
-        <TitleCard
-          handleFormSubmit={handleFormSubmit}
-          postCodeInput={postCodeInput}
-          setPostCodeInput={setPostCodeInput}
-          isRememberPostCode={isRememberPostCode}
-          setRememberPostCode={setRememberPostCode}
-          isPostCodeInvalid={isPostCodeInvalid}
-        />
-      </SnackbarProvider>
-
-      {isItemCardsVisible && (
-        <div className="DeliveryStatusItems">
-          <DeliveryStatusItem
-            name="NTUC FairPrice"
-            formSubmitted={formSubmitted}
-            loading={isNtucLoading}
-            res={ntucSlotRes}
-            dataCheck={ntucSlotRes && ntucSlotRes.data.available}
-            error={ntucSlotErr}
-            shoppingCart="https://www.fairprice.com.sg/cart"
+      <div style={{ minHeight: "70vh" }}>
+        <SnackbarProvider>
+          <TitleCard
+            handleFormSubmit={handleFormSubmit}
+            postCodeInput={postCodeInput}
+            setPostCodeInput={setPostCodeInput}
+            isRememberPostCode={isRememberPostCode}
+            setRememberPostCode={setRememberPostCode}
+            isPostCodeInvalid={isPostCodeInvalid}
           />
+        </SnackbarProvider>
 
-          <DeliveryStatusItem
-            name="Sheng Shiong"
-            formSubmitted={formSubmitted}
-            loading={isShengShiongLoading}
-            res={shengShiongRes}
-            dataCheck={
-              shengShiongRes && shengShiongRes.result !== "No more timeslots."
-            }
-            error={shengShiongErr}
-            shoppingCart="https://www.allforyou.sg/cart"
-          />
+        {isItemCardsVisible && (
+          <div className="DeliveryStatusItems">
+            <DeliveryStatusItem
+              name="NTUC FairPrice"
+              formSubmitted={formSubmitted}
+              loading={isNtucLoading}
+              res={ntucSlotRes}
+              dataCheck={ntucSlotRes && ntucSlotRes.data.available}
+              error={ntucSlotErr}
+              isUnserviceable={isNtucUnserviceable}
+              shoppingCart="https://www.fairprice.com.sg/cart"
+            />
 
-          <DeliveryStatusItem
-            name="Cold Storage"
-            formSubmitted={formSubmitted}
-            loading={isColdStorageLoading}
-            res={coldStorageRes}
-            dataCheck={coldStorageRes && coldStorageRes.earliest.available}
-            error={coldStorageErr}
-            shoppingCart="https://coldstorage.com.sg/checkout/cart"
-          />
+            <DeliveryStatusItem
+              name="Sheng Shiong"
+              formSubmitted={formSubmitted}
+              loading={isShengShiongLoading}
+              res={shengShiongRes}
+              dataCheck={
+                shengShiongRes && shengShiongRes.result !== "No more timeslots."
+              }
+              error={shengShiongErr}
+              shoppingCart="https://www.allforyou.sg/cart"
+            />
 
-          <DeliveryStatusItem
-            name="Giant"
-            formSubmitted={formSubmitted}
-            loading={isGiantLoading}
-            res={giantRes}
-            dataCheck={giantRes && giantRes.earliest.available}
-            error={giantErr}
-            shoppingCart="https://giant.sg/checkout/cart"
-          />
+            <DeliveryStatusItem
+              name="Cold Storage"
+              formSubmitted={formSubmitted}
+              loading={isColdStorageLoading}
+              res={coldStorageRes}
+              dataCheck={coldStorageRes && coldStorageRes.earliest.available}
+              error={coldStorageErr}
+              shoppingCart="https://coldstorage.com.sg/checkout/cart"
+            />
 
-          <DeliveryStatusItemStatic
-            name="Redmart"
-            site="redmart.com"
-            href="https://redmart-delivery-schedule.lazada.sg"
-            formSubmitted={formSubmitted}
-          />
-        </div>
-      )}
+            <DeliveryStatusItem
+              name="Giant"
+              formSubmitted={formSubmitted}
+              loading={isGiantLoading}
+              res={giantRes}
+              dataCheck={giantRes && giantRes.earliest.available}
+              error={giantErr}
+              shoppingCart="https://giant.sg/checkout/cart"
+            />
+
+            <DeliveryStatusItemStatic
+              name="Redmart"
+              site="redmart.com"
+              href="https://redmart-delivery-schedule.lazada.sg"
+              formSubmitted={formSubmitted}
+            />
+          </div>
+        )}
+      </div>
+
+      <p>
+        Made with{" "}
+        <IconContext.Provider
+          value={{ color: "#fe2d55", size: 12, className: "global-class-name" }}
+        >
+          <FaHeart />
+        </IconContext.Provider>{" "}
+        by{" "}
+        <a href="https://www.dyllon.dev" target="_blank" rel="noopener">
+          Dyllon
+        </a>
+      </p>
     </div>
   );
 }

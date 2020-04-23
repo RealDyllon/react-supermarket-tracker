@@ -61,25 +61,29 @@ const DeliveryStatusItem = (props) => {
         ) : props.error ? (
           <p>{props.name} API error</p>
         ) : // props.error // return the error text
-        props.res ? (
-          props.dataCheck ? (
-            <>
-              <p style={{ marginBottom: 0 }}>Delivery Avaliable!</p>
-              <p
-                style={{
-                  display: "inline-block",
-                  marginBottom: 8,
-                  color: "blue",
-                }}
-              >
-                Go to shopping cart
-              </p>
-            </>
+        !props.isUnserviceable ? (
+          props.res ? (
+            props.dataCheck ? (
+              <>
+                <p style={{ marginBottom: 0 }}>Delivery Avaliable!</p>
+                <p
+                  style={{
+                    display: "inline-block",
+                    marginBottom: 8,
+                    color: "blue",
+                  }}
+                >
+                  Go to shopping cart
+                </p>
+              </>
+            ) : (
+              <p>Delivery Unavailable</p>
+            )
           ) : (
-            <p>Delivery Unavailable</p>
+            <p>Internal error: props.res is falsy!</p>
           )
         ) : (
-          <p>Internal error: props.res is falsy!</p>
+          <p>Doesn't serve your area :(</p>
         )}
       </div>
       <div className="right-column">
@@ -93,14 +97,18 @@ const DeliveryStatusItem = (props) => {
           />
         ) : props.error ? (
           <ErrorIcon />
-        ) : props.res ? (
-          props.dataCheck ? (
-            <AvailableIcon />
+        ) : !props.isUnserviceable ? (
+          props.res ? (
+            props.dataCheck ? (
+              <AvailableIcon />
+            ) : (
+              <NotAvaliableIcon />
+            )
           ) : (
-            <NotAvaliableIcon />
+            <ErrorIcon />
           )
         ) : (
-          <ErrorIcon />
+          <NotAvaliableIcon />
         )}
       </div>
     </div>
