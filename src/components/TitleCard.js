@@ -1,7 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useSnackbar } from "react-simple-snackbar";
+
+const delay = require("delay");
 
 const TitleCard = (props) => {
+  const [openSnackbar, closeSnackbar] = useSnackbar({ position: "top-center" });
+  const [exisitingInvalid, setExistingInvalid] = useState(null);
+
+  useEffect(() => {
+    // effect
+    if (!exisitingInvalid && props.isPostCodeInvalid) {
+      openSnackbar("Invalid Postal Code!");
+      setExistingInvalid(true);
+
+      setTimeout(() => closeSnackbar(), 3000);
+    }
+
+    return () => {
+      // cleanup
+    };
+  }, [props.isPostCodeInvalid, openSnackbar, exisitingInvalid, closeSnackbar]);
+
   return (
     <div className="title-card">
       <h1 className="nunito-sans" style={{ marginBottom: 0 }}>
@@ -26,7 +46,7 @@ const TitleCard = (props) => {
             name="post code"
             value={props.postCodeInput}
             onChange={(e) => props.setPostCodeInput(e.target.value)}
-            // style={{ border: !isPostCodeInvalid ? "red" : "blue" }}
+            style={{ borderColor: props.isPostCodeInvalid ? "red" : "grey" }}
           />
         </label>
         <input className="input-button" type="submit" value="Submit" />
@@ -53,6 +73,7 @@ TitleCard.propTypes = {
   setPostCodeInput: PropTypes.func.isRequired,
   isRememberPostCode: PropTypes.bool.isRequired,
   setRememberPostCode: PropTypes.func.isRequired,
+  isPostCodeInvalid: PropTypes.bool,
 };
 
 export default TitleCard;

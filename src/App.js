@@ -29,7 +29,7 @@ function App() {
 
   // global
   const [isItemCardsVisible, setItemCardsVisible] = useState(false);
-  const [isPostCodeInvalid, setPostCodeInvalid] = useState(true);
+  const [isPostCodeInvalid, setPostCodeInvalid] = useState(false);
 
   // form live inputs
   const [postCodeInput, setPostCodeInput] = useState(
@@ -74,7 +74,7 @@ function App() {
     // request time!
     console.log("postCode", postCodeInput);
 
-    if (postCodeInput.length === 6) {
+    if (postCodeInput.length === 6 && postCodeInput.substring(1) !== 0) {
       setPostCodeInvalid(false);
 
       setItemCardsVisible(true);
@@ -142,7 +142,7 @@ function App() {
               },
               (error) => {
                 setNtucLoading(false);
-                setNtucSlotRes(error);
+                // setNtucSlotRes(error);
                 setNtucSlotErr(error);
                 console.error("ntucSlotRes", error);
               }
@@ -176,7 +176,7 @@ function App() {
           console.error("shengShiongRes", error);
           setShengShongLoading(false);
           setShengShongErr(error);
-          setShengShiongRes(error);
+          // setShengShiongRes(error);
         }
       );
   };
@@ -209,7 +209,7 @@ function App() {
           console.error("coldStorageRes", error);
           setColdStorageLoading(false);
           setColdStorageErr(error);
-          setColdStorageRes(error);
+          // setColdStorageRes(error);
         }
       );
   };
@@ -230,7 +230,7 @@ function App() {
           console.error("giantRes", error);
           setGiantLoading(false);
           setGiantErr(error);
-          setGiantRes(error);
+          // setGiantRes(error);
         }
       );
   };
@@ -244,6 +244,7 @@ function App() {
           setPostCodeInput={setPostCodeInput}
           isRememberPostCode={isRememberPostCode}
           setRememberPostCode={setRememberPostCode}
+          isPostCodeInvalid={isPostCodeInvalid}
         />
       </SnackbarProvider>
 

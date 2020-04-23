@@ -59,8 +59,9 @@ const DeliveryStatusItem = (props) => {
         {props.loading ? (
           <p>Checking timetables...</p>
         ) : props.error ? (
-          props.error // return the error text
-        ) : props.res ? (
+          <p>{props.name} API error</p>
+        ) : // props.error // return the error text
+        props.res ? (
           props.dataCheck ? (
             <>
               <p style={{ marginBottom: 0 }}>Delivery Avaliable!</p>
