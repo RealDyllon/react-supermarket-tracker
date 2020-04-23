@@ -30,7 +30,7 @@ body {
   height: 24px;
   width: 100px;
   margin: 0 6px;
-  padding: 0.4em 0.4em;
+  padding: 0.4em 0.5em;
   font-size: 1rem;
   border: 0;
   border-radius: 0;
@@ -47,7 +47,7 @@ body {
 }
 
 @media (max-width: 340px) {
-  form label span {
+  .hide-label-on-xs {
     color: red;
     display: none;
   }

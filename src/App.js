@@ -1,17 +1,22 @@
 import React, { useState } from "react";
+import ReactGA from "react-ga";
+//
 import "./App.css";
 
 // for spinner
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import DeliveryStatusItem from "./components/DeliveryStatusItem";
 
+ReactGA.initialize("UA-159939917-3");
+ReactGA.pageview(window.location.pathname + window.location.search);
+
 function App() {
   const localStoragePostCode = localStorage.getItem("postCode");
-  console.log("localStoragePostCode", localStoragePostCode);
+  console.info("localStoragePostCode", localStoragePostCode);
 
   const localStoragePostCodeRememberPref =
     localStorage.getItem("postCodeRememberPref") === "1";
-  console.log(
+  console.info(
     "localStoragePostCodeRememberPref",
     localStoragePostCodeRememberPref
   );
@@ -205,14 +210,19 @@ function App() {
   return (
     <div className="App">
       <div className="title-card">
-        <h1 className="nunito-sans" style={{}}>
+        <h1 className="nunito-sans" style={{ marginBottom: 0 }}>
           Supermarket Tracker
         </h1>
-        <h4 style={{ marginBottom: "8px" }}>Enter your post code:</h4>
+        <h4
+          className="nunito-sans"
+          style={{ marginTop: 8, marginBottom: "8px" }}
+        >
+          Enter your post code:
+        </h4>
 
         <form className="form" onSubmit={handleFormSubmit}>
           <label>
-            <span>Post Code:</span>
+            <span className="hide-label-on-xs">Post Code:</span>
             <input
               className="input-text"
               type="text"
