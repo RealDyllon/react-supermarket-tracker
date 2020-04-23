@@ -74,7 +74,7 @@ function App() {
     // request time!
     console.log("postCode", postCodeInput);
 
-    if (postCodeInput.length === 6 && postCodeInput.substring(1) !== 0) {
+    if (postCodeInput.length === 6) {
       setPostCodeInvalid(false);
 
       setItemCardsVisible(true);
