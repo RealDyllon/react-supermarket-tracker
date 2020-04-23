@@ -7,9 +7,30 @@ import Loader from "react-loader-spinner";
 import DeliveryStatusItem from "./components/DeliveryStatusItem";
 
 function App() {
-  const [postCodeInput, setPostCodeInput] = useState(""); // live input
+  const localStoragePostCode = localStorage.getItem("postCode");
+  console.log("localStoragePostCode", localStoragePostCode);
+
+  const localStoragePostCodeRememberPref =
+    localStorage.getItem("postCodeRememberPref") === "1";
+  console.log(
+    "localStoragePostCodeRememberPref",
+    localStoragePostCodeRememberPref
+  );
+
+  // form live inputs
+  const [postCodeInput, setPostCodeInput] = useState(
+    localStoragePostCode ? localStoragePostCode : ""
+  ); // live input
+  const [isRememberPostCode, setRememberPostCode] = useState(
+    localStoragePostCodeRememberPref
+  );
+
+  // form submission
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [requestedPostCode, setRequestedPostCode] = useState("");
+  const [requestedRememberPostCode, setRequestedRememberPostCode] = useState(
+    false
+  );
 
   // ntuc
   const [isNtucLoading, setNtucLoading] = useState(false);
@@ -46,6 +67,16 @@ function App() {
 
     const postCode = postCodeInput;
     setRequestedPostCode(postCode);
+
+    const rememberPostCodePref = isRememberPostCode;
+
+    if (rememberPostCodePref) {
+      localStorage.setItem("postCode", postCode);
+      localStorage.setItem("postCodeRememberPref", 1); //true
+    } else {
+      localStorage.removeItem("postCode");
+      localStorage.removeItem("postCodeRememberPref"); //true
+    }
 
     reqNtuc(postCode);
     reqShengShiong(postCode);
@@ -193,6 +224,16 @@ function App() {
             />
           </label>
           <input className="input-button" type="submit" value="Submit" />
+          <label style={{ display: "block", marginTop: 8 }}>
+            <input
+              className="input-checkbox"
+              type="checkbox"
+              name="remember post code"
+              checked={isRememberPostCode}
+              onChange={() => setRememberPostCode(!isRememberPostCode)}
+            />
+            <span>Remember Post Code</span>
+          </label>
         </form>
       </div>
 
