@@ -308,7 +308,7 @@ function App() {
         )}
       </div>
 
-      <p>
+      <p style={{ marginBottom: 0 }}>
         Made with{" "}
         <IconContext.Provider
           value={{ color: "#fe2d55", size: 12, className: "global-class-name" }}
@@ -320,6 +320,8 @@ function App() {
           Dyllon
         </a>
       </p>
+
+      <p style={{ marginTop: 0 }}>Enquiries: <a href="mailto:contact@dyllon.dev" target="_blank" rel="noopener">contact@dyllon.dev</a></p>
     </div>
   );
 }
