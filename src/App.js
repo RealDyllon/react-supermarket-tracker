@@ -54,7 +54,7 @@ function App() {
   const [ntucStoreId, setNtucStoreId] = useState(null); // eslint-disable-line no-unused-vars
   const [ntucSlotRes, setNtucSlotRes] = useState(null);
   const [ntucSlotErr, setNtucSlotErr] = useState(null);
-  const [isNtucUnserviceable, setNtucUnserviceable] = useState(false)
+  const [isNtucUnserviceable, setNtucUnserviceable] = useState(false);
 
   // sheng shiong
   const [isShengShiongLoading, setShengShongLoading] = useState(false);
@@ -152,12 +152,10 @@ function App() {
                 }
               );
           } else {
-            setNtucUnserviceable(true)
+            setNtucUnserviceable(true);
             setNtucLoading(false);
             console.log("ntucSlotRes", "NTUC does not serve this area omg");
           }
-
-         
         },
         (error) => {
           setNtucStoreRes(error);
@@ -166,16 +164,13 @@ function App() {
   };
 
   const reqShengShiong = (postCode) => {
-    fetch(
-      `https://n2ws6vu3e2.execute-api.ap-southeast-1.amazonaws.com/default/sheng-shiong-delivery?postcode=${postCode}`,
-      {
-        method: "GET", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    fetch(`${process.env.REACT_APP_SHENG_SHIONG_URL}?postcode=${postCode}`, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => res.json())
       .then(
         (result) => {
@@ -194,7 +189,7 @@ function App() {
 
   const reqColdStorage = (postCode) => {
     fetch(
-      `https://vsxhagxx79.execute-api.ap-southeast-1.amazonaws.com/default/cold-storage-delivery?postcode=${postCode}`,
+      `${process.env.REACT_APP_COLD_STORAGE_URL}?postcode=${postCode}`,
 
       {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -226,9 +221,7 @@ function App() {
   };
 
   const reqGiant = (postCode) => {
-    fetch(
-      `https://njkwnb0dok.execute-api.ap-southeast-1.amazonaws.com/default/giant-delivery?postcode=${postCode}`
-    )
+    fetch(`${process.env.REACT_APP_GIANT_URL}?postcode=${postCode}`)
       .then((res) => res.json())
       .then(
         (result) => {
