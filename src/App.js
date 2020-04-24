@@ -16,33 +16,28 @@ import { IconContext } from "react-icons";
 const delay = require("delay");
 
 const stores = {
-  "ntuc" :
-    {
-      name: "NTUC FairPrice",
-      url: "https://www.fairprice.com.sg/cart",
-    },
-  "shengShiong" :
-    {
-      name: "Sheng Shiong",
-      url: "https://www.allforyou.sg/cart",
-    },
-  "coldStorage" :
-    {
-      name: "Cold Storage",
-      url: "https://coldstorage.com.sg/checkout/cart",
-    },
-  "giant" :
-    {
-      name: "Giant",
-      url: "https://giant.sg/checkout/cart",
-    },
-  "redmart" :
-    {
-      name: "Red Mart",
-      site: "redmart.com",
-      url: "https://redmart-delivery-schedule.lazada.sg"
-    }
-  }
+  ntuc: {
+    name: "NTUC FairPrice",
+    url: "https://www.fairprice.com.sg/cart",
+  },
+  shengShiong: {
+    name: "Sheng Shiong",
+    url: "https://www.allforyou.sg/cart",
+  },
+  coldStorage: {
+    name: "Cold Storage",
+    url: "https://coldstorage.com.sg/checkout/cart",
+  },
+  giant: {
+    name: "Giant",
+    url: "https://giant.sg/checkout/cart",
+  },
+  redmart: {
+    name: "Red Mart",
+    site: "redmart.com",
+    url: "https://redmart-delivery-schedule.lazada.sg",
+  },
+};
 
 ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_ID);
 ReactGA.pageview(window.location.pathname + window.location.search);
@@ -303,7 +298,11 @@ function App() {
               dataCheck={
                 shengShiongRes && shengShiongRes.result !== "No more timeslots."
               }
-              error={shengShiongErr}
+              error={
+                shengShiongErr ||
+                (shengShiongRes &&
+                  shengShiongRes.result === "Please try again.")
+              }
               shoppingCart={stores.shengShiong.url}
             />
 

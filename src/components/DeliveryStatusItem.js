@@ -59,7 +59,7 @@ const DeliveryStatusItem = (props) => {
         {props.loading ? (
           <p>Checking timetables...</p>
         ) : props.error ? (
-          <p>{props.name} API error</p>
+          <p>{props.name} is currently experiencing issues</p>
         ) : // props.error // return the error text
         !props.isUnserviceable ? (
           props.res ? (
@@ -119,7 +119,7 @@ DeliveryStatusItem.propTypes = {
   formSubmitted: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  error: PropTypes.string,
+  error: PropTypes.object,
   res: PropTypes.object,
   dataCheck: PropTypes.bool,
 };
