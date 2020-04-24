@@ -15,7 +15,7 @@ import { IconContext } from "react-icons";
 
 const delay = require("delay");
 
-ReactGA.initialize("UA-159939917-3");
+ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_ID);
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 function App() {
@@ -308,7 +308,7 @@ function App() {
         )}
       </div>
 
-      <p>
+      <p style={{ marginBottom: 0 }}>
         Made with{" "}
         <IconContext.Provider
           value={{ color: "#fe2d55", size: 12, className: "global-class-name" }}
@@ -318,6 +318,18 @@ function App() {
         by{" "}
         <a href="https://www.dyllon.dev" target="_blank" rel="noopener">
           Dyllon
+        </a>
+      </p>
+
+      <p style={{ margin: "0 12px 10vh" }}>
+        For enquiries, email me:{" "}
+        <a
+          style={{ textDecoration: "none" }}
+          href="mailto:contact@dyllon.dev"
+          target="_blank"
+          rel="noopener"
+        >
+          contact@dyllon.dev
         </a>
       </p>
     </div>
