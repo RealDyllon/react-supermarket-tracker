@@ -2,9 +2,17 @@
 
 Visit the site at: [https://supermarkets.dyllon.dev](https://supermarkets.dyllon.dev)
 
-I built 3 nodejs serverless functions for some of the APIs to circumvent cors, which I will upload to a gist shortly. Stay tuned!
+#### I built 3 nodejs serverless (AWS lambda) functions for some of the APIs to circumvent cors:
 
-PRs Are welcome!
+Sheng Shiong: https://gist.github.com/RealDyllon/0240ba0d1ba0fbebf23efe61746623ad
+
+Cold Storage: https://gist.github.com/RealDyllon/f2861c054e59095d0bb7a6d950217c67
+
+Giant: https://gist.github.com/RealDyllon/2a412971d7ae7f625a84752d050c4232
+
+Fairprice doesn't add cors headers to their responses, so we don't need to use a proxy api server.
+
+#### PRs Are welcome!
 
 ____
 
