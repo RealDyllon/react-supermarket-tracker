@@ -15,6 +15,35 @@ import { IconContext } from "react-icons";
 
 const delay = require("delay");
 
+const stores = {
+  "ntuc" :
+    {
+      name: "NTUC FairPrice",
+      url: "https://www.fairprice.com.sg/cart",
+    },
+  "shengShiong" :
+    {
+      name: "Sheng Shiong",
+      url: "https://www.allforyou.sg/cart",
+    },
+  "coldStorage" :
+    {
+      name: "Cold Storage",
+      url: "https://coldstorage.com.sg/checkout/cart",
+    },
+  "giant" :
+    {
+      name: "Giant",
+      url: "https://giant.sg/checkout/cart",
+    },
+  "redmart" :
+  {
+    name: "Red Mart",
+    site: "redmart.com",
+    href: "https://redmart-delivery-schedule.lazada.sg"
+  }
+  }
+
 ReactGA.initialize("UA-159939917-3");
 ReactGA.pageview(window.location.pathname + window.location.search);
 
@@ -256,18 +285,18 @@ function App() {
         {isItemCardsVisible && (
           <div className="DeliveryStatusItems">
             <DeliveryStatusItem
-              name="NTUC FairPrice"
+              name={stores.ntuc.name}
               formSubmitted={formSubmitted}
               loading={isNtucLoading}
               res={ntucSlotRes}
               dataCheck={ntucSlotRes && ntucSlotRes.data.available}
               error={ntucSlotErr}
               isUnserviceable={isNtucUnserviceable}
-              shoppingCart="https://www.fairprice.com.sg/cart"
+              shoppingCart={stores.ntuc.url}
             />
 
             <DeliveryStatusItem
-              name="Sheng Shiong"
+              name={stores.shengShiong.name}
               formSubmitted={formSubmitted}
               loading={isShengShiongLoading}
               res={shengShiongRes}
@@ -275,33 +304,33 @@ function App() {
                 shengShiongRes && shengShiongRes.result !== "No more timeslots."
               }
               error={shengShiongErr}
-              shoppingCart="https://www.allforyou.sg/cart"
+              shoppingCart={stores.shengShiong.url}
             />
 
             <DeliveryStatusItem
-              name="Cold Storage"
+              name={stores.coldStorage.name}
               formSubmitted={formSubmitted}
               loading={isColdStorageLoading}
               res={coldStorageRes}
               dataCheck={coldStorageRes && coldStorageRes.earliest.available}
               error={coldStorageErr}
-              shoppingCart="https://coldstorage.com.sg/checkout/cart"
+              shoppingCart={stores.coldStorage.url}
             />
 
             <DeliveryStatusItem
-              name="Giant"
+              name={stores.giant.name}
               formSubmitted={formSubmitted}
               loading={isGiantLoading}
               res={giantRes}
               dataCheck={giantRes && giantRes.earliest.available}
               error={giantErr}
-              shoppingCart="https://giant.sg/checkout/cart"
+              shoppingCart={stores.giant.url}
             />
 
             <DeliveryStatusItemStatic
-              name="Redmart"
-              site="redmart.com"
-              href="https://redmart-delivery-schedule.lazada.sg"
+              name={stores.redmart.name}
+              site={stores.redmart.site}
+              href={stores.redmart.url}
               formSubmitted={formSubmitted}
             />
           </div>
