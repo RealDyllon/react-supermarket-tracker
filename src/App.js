@@ -321,7 +321,7 @@ function App() {
         </a>
       </p>
 
-      <p style={{ marginTop: 0 }}>
+      <p style={{ margin: "0 12px 10vh" }}>
         For enquiries, email me:{" "}
         <a
           style={{ textDecoration: "none" }}
