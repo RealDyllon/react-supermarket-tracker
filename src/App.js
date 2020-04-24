@@ -301,7 +301,7 @@ function App() {
               error={
                 shengShiongErr ||
                 (shengShiongRes &&
-                  shengShiongRes.result === "Please try again.")
+                  shengShiongRes.response === "Please try again.")
               }
               shoppingCart={stores.shengShiong.url}
             />
