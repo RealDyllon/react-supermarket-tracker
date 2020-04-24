@@ -40,7 +40,7 @@ const stores = {
     {
       name: "Red Mart",
       site: "redmart.com",
-      href: "https://redmart-delivery-schedule.lazada.sg"
+      url: "https://redmart-delivery-schedule.lazada.sg"
     }
   }
 
