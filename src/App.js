@@ -321,7 +321,17 @@ function App() {
         </a>
       </p>
 
-      <p style={{ marginTop: 0 }}>Enquiries: <a href="mailto:contact@dyllon.dev" target="_blank" rel="noopener">contact@dyllon.dev</a></p>
+      <p style={{ marginTop: 0 }}>
+        For enquiries, email me:{" "}
+        <a
+          style={{ textDecoration: "none" }}
+          href="mailto:contact@dyllon.dev"
+          target="_blank"
+          rel="noopener"
+        >
+          contact@dyllon.dev
+        </a>
+      </p>
     </div>
   );
 }
