@@ -15,7 +15,7 @@ import { IconContext } from "react-icons";
 
 const delay = require("delay");
 
-ReactGA.initialize("UA-159939917-3");
+ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_ID);
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 function App() {
