@@ -33,7 +33,7 @@ const stores = {
     url: "https://giant.sg/checkout/cart",
   },
   redmart: {
-    name: "Red Mart",
+    name: "Redmart",
     site: "redmart.com",
     url: "https://redmart-delivery-schedule.lazada.sg",
   },
