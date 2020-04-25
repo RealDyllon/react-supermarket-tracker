@@ -39,12 +39,18 @@ const ErrorIcon = () => (
 const DeliveryStatusItem = (props) => {
   return (
     <div
-      onClick={() =>
-        true ? window.open(props.shoppingCart, "_blank", "noopener") : null
+      onClick={
+        () =>
+          !props.loading && !props.error && props.res && props.dataCheck
+            ? window.open(props.shoppingCart, "_blank", "noopener")
+            : null // only clickable if delivery is available
       }
       className="DeliveryStatusItem-Item transition-ease-out-quad"
       style={{
-        cursor: true ? "pointer" : "default",
+        cursor:
+          !props.loading && !props.error && props.res && props.dataCheck
+            ? "pointer"
+            : "default",
         visibility: !props.formSubmitted ? "collapse" : "visible",
         opacity: !props.formSubmitted ? 0 : 1,
       }}

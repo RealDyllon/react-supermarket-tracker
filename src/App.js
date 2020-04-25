@@ -33,7 +33,7 @@ const stores = {
     url: "https://giant.sg/checkout/cart",
   },
   redmart: {
-    name: "Red Mart",
+    name: "Redmart",
     site: "redmart.com",
     url: "https://redmart-delivery-schedule.lazada.sg",
   },
@@ -291,22 +291,6 @@ function App() {
             />
 
             <DeliveryStatusItem
-              name={stores.shengShiong.name}
-              formSubmitted={formSubmitted}
-              loading={isShengShiongLoading}
-              res={shengShiongRes}
-              dataCheck={
-                shengShiongRes && shengShiongRes.result !== "No more timeslots."
-              }
-              error={
-                shengShiongErr ||
-                (shengShiongRes &&
-                  shengShiongRes.response === "Please try again.")
-              }
-              shoppingCart={stores.shengShiong.url}
-            />
-
-            <DeliveryStatusItem
               name={stores.coldStorage.name}
               formSubmitted={formSubmitted}
               loading={isColdStorageLoading}
@@ -324,6 +308,22 @@ function App() {
               dataCheck={giantRes && giantRes.earliest.available}
               error={giantErr}
               shoppingCart={stores.giant.url}
+            />
+
+            <DeliveryStatusItem
+              name={stores.shengShiong.name}
+              formSubmitted={formSubmitted}
+              loading={isShengShiongLoading}
+              res={shengShiongRes}
+              dataCheck={
+                shengShiongRes && shengShiongRes.result !== "No more timeslots."
+              }
+              error={
+                shengShiongErr ||
+                (shengShiongRes &&
+                  shengShiongRes.response === "Please try again.")
+              }
+              shoppingCart={stores.shengShiong.url}
             />
 
             <DeliveryStatusItemStatic
