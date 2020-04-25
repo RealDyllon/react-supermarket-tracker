@@ -73,29 +73,6 @@ function App() {
   //   false
   // );
 
-  // ntuc
-  const [isNtucLoading, setNtucLoading] = useState(false);
-  const [ntucStoreRes, setNtucStoreRes] = useState(null); // eslint-disable-line no-unused-vars
-  const [ntucStoreId, setNtucStoreId] = useState(null); // eslint-disable-line no-unused-vars
-  const [ntucSlotRes, setNtucSlotRes] = useState(null);
-  const [ntucSlotErr, setNtucSlotErr] = useState(null);
-  const [isNtucUnserviceable, setNtucUnserviceable] = useState(false);
-
-  // sheng shiong
-  const [isShengShiongLoading, setShengShongLoading] = useState(false);
-  const [shengShiongRes, setShengShiongRes] = useState(null);
-  const [shengShiongErr, setShengShongErr] = useState(null);
-
-  // cold storage
-  const [isColdStorageLoading, setColdStorageLoading] = useState(false);
-  const [coldStorageRes, setColdStorageRes] = useState(null);
-  const [coldStorageErr, setColdStorageErr] = useState(null);
-
-  // giant
-  const [isGiantLoading, setGiantLoading] = useState(false);
-  const [giantRes, setGiantRes] = useState(null);
-  const [giantErr, setGiantErr] = useState(null);
-
   const reducer = (DATA, action) => {
     if (action.type == "LOAD_ALL") {
       return DATA.map((store) => {
