@@ -373,20 +373,9 @@ function App() {
             isPostCodeInvalid={isPostCodeInvalid}
           />
         </SnackbarProvider>
-        {/* <div>
-          {state.map((store, idx) => (
-            <div key={idx}>
-              <div>{store.name + idx}</div>
-              <div>
-                <button onClick={() => LOAD_ALL(store.name)}>loading</button>
-              </div>
-            </div>
-          ))}
-        </div> */}
-
         {isItemCardsVisible && (
           <div className="DeliveryStatusItems">
-            {STORES.map((store, idx) => (
+            {STORES.map((store) => (
               <DeliveryStatusItem
                 name={store.name}
                 formSubmitted={formSubmitted}
