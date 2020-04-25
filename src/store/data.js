@@ -5,7 +5,7 @@ const data = [
     url: "https://www.fairprice.com.sg/cart",
     loading: false,
     response: {},
-    isServiceable: false,
+    isUnserviceable: false,
     dataCheck: false,
     error: {},
   },
@@ -15,7 +15,7 @@ const data = [
     url: "https://www.allforyou.sg/cart",
     loading: false,
     response: {},
-    isServiceable: false,
+    isUnserviceable: false,
     dataCheck: false,
     error: {},
   },
@@ -25,7 +25,7 @@ const data = [
     url: "https://coldstorage.com.sg/checkout/cart",
     loading: false,
     response: {},
-    isServiceable: false,
+    isUnserviceable: false,
     dataCheck: false,
     error: {},
   },
@@ -35,15 +35,10 @@ const data = [
     url: "https://giant.sg/checkout/cart",
     loading: false,
     response: {},
-    isServiceable: false,
+    isUnserviceable: false,
     dataCheck: false,
     error: {},
   },
-  //   {
-  //     name: "Redmart",
-  //     site: "redmart.com",
-  //     url: "https://redmart-delivery-schedule.lazada.sg",
-  //   },
 ];
 
 export default data;

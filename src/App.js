@@ -16,28 +16,10 @@ import { IconContext } from "react-icons";
 
 const delay = require("delay");
 
-const stores = {
-  ntuc: {
-    name: "NTUC FairPrice",
-    url: "https://www.fairprice.com.sg/cart",
-  },
-  shengShiong: {
-    name: "Sheng Shiong",
-    url: "https://www.allforyou.sg/cart",
-  },
-  coldStorage: {
-    name: "Cold Storage",
-    url: "https://coldstorage.com.sg/checkout/cart",
-  },
-  giant: {
-    name: "Giant",
-    url: "https://giant.sg/checkout/cart",
-  },
-  redmart: {
-    name: "Redmart",
-    site: "redmart.com",
-    url: "https://redmart-delivery-schedule.lazada.sg",
-  },
+const redmart = {
+  name: "Redmart",
+  site: "redmart.com",
+  url: "https://redmart-delivery-schedule.lazada.sg",
 };
 
 ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_ID);
@@ -92,7 +74,7 @@ function App() {
 
     if (action.type == "RESPONSE") {
       return DATA.map((store) => {
-        if (store.id == action.payload.name) {
+        if (store.id == action.payload.id) {
           store.response = action.payload.response;
         }
         return store;
@@ -101,17 +83,34 @@ function App() {
 
     if (action.type == "ERROR") {
       return DATA.map((store) => {
-        if (store.id == action.payload.name) {
+        if (store.id == action.payload.id) {
           store.error = action.payload.response;
         }
         return store;
       });
     }
 
-    if (action.type == "SERVICEABLE") {
+    if (action.type == "SET_UNSERVICEABLE") {
       return DATA.map((store) => {
-        if (store.id == action.payload.name) {
-          store.isserviceable = true;
+        if (store.id == action.payload.id) {
+          store.isUnserviceable = true;
+        }
+        return store;
+      });
+    }
+
+    if (action.type == "IS_AVAILABLE") {
+      return DATA.map((store) => {
+        if (
+          store.id == action.payload.id &&
+          (action.payload.response === false ||
+            action.payload.response === null)
+        ) {
+          store.dataCheck = false;
+          store.error = null;
+        } else {
+          // store.dataCheck = action.payload.response;
+          store.dataCheck = true;
         }
         return store;
       });
@@ -124,20 +123,24 @@ function App() {
     dispatch({ type: "LOAD_ALL" });
   }
 
-  function LOADING(name) {
-    dispatch({ type: "LOADING", payload: name });
+  function LOADING(id) {
+    dispatch({ type: "LOADING", payload: id });
   }
 
-  function RESPONSE(name, response) {
-    dispatch({ type: "RESPONSE", payload: { name, response } });
+  function RESPONSE(id, response) {
+    dispatch({ type: "RESPONSE", payload: { id, response } });
   }
 
-  function ERROR(name, response) {
-    dispatch({ type: "ERROR", payload: { name, response } });
+  function ERROR(id, response) {
+    dispatch({ type: "ERROR", payload: { id, response } });
   }
 
-  function SERVICEABLE(name, response) {
-    dispatch({ type: "SERVICEABLE", payload: { name, response } });
+  function SET_UNSERVICEABLE(id) {
+    dispatch({ type: "SET_UNSERVICEABLE", payload: id });
+  }
+
+  function IS_AVAILABLE(id, response) {
+    dispatch({ type: "IS_AVAILABLE", payload: { id, response } });
   }
 
   const handleFormSubmit = (e) => {
@@ -185,20 +188,17 @@ function App() {
   };
 
   const reqNtuc = (postCode) => {
+    const id = "ntuc";
     fetch(
       `https://website-api.omni.fairprice.com.sg/api/serviceable-area?city=Singapore&pincode=${postCode}`
     )
       .then((res) => res.json())
       .then(
         (result) => {
-          const id = "ntuc";
           console.log("ntucStoreRes", result);
           RESPONSE(id, result);
 
-          // setNtucStoreRes(result);
-
           const storeId = result && result.data && result.data.store.id;
-          // setNtucStoreId(storeId);
 
           if (storeId) {
             console.log("ntuc storeId", storeId);
@@ -211,6 +211,7 @@ function App() {
                 (result) => {
                   LOADING(id);
                   RESPONSE(id, result);
+                  IS_AVAILABLE(id, result.data.available);
                   console.log("ntucSlotRes", result);
                 },
                 (error) => {
@@ -221,21 +222,19 @@ function App() {
                 }
               );
           } else {
-            SERVICEABLE(id, false);
+            SET_UNSERVICEABLE(id);
             LOADING(id);
             console.log("ntucSlotRes", "NTUC does not serve this area omg");
           }
         },
         (error) => {
-          const id = "ntuc";
-
-          // setNtucStoreRes(error);
           RESPONSE(id, error);
         }
       );
   };
 
   const reqShengShiong = (postCode) => {
+    const id = "shengshiong";
     fetch(`${process.env.REACT_APP_SHENG_SHIONG_URL}?postcode=${postCode}`, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -246,28 +245,24 @@ function App() {
       .then((res) => res.json())
       .then(
         (result) => {
-          const id = "shengshiong";
-
           console.log("shengShiongRes", result);
           LOADING(id);
           RESPONSE(id, result);
-          // setShengShongLoading(false);
-          // setShengShiongRes(result);
+          if (result !== "No more timeslots.") {
+            IS_AVAILABLE(id, true);
+          }
         },
         (error) => {
-          const id = "shengshiong";
-
           console.error("shengShiongRes", error);
           LOADING(id);
           ERROR(id, error);
-          // setShengShongLoading(false);
-          // setShengShongErr(error);
-          // setShengShiongRes(error);
         }
       );
   };
 
   const reqColdStorage = (postCode) => {
+    const id = "coldstorage";
+
     fetch(
       `${process.env.REACT_APP_COLD_STORAGE_URL}?postcode=${postCode}`,
 
@@ -286,53 +281,36 @@ function App() {
       .then((res) => res.json())
       .then(
         (result) => {
-          const id = "coldstorage";
-
           console.log("coldStorageRes", result);
-          // setColdStorageLoading(false);
-          // setColdStorageRes(result);
-
           LOADING(id);
           RESPONSE(id, result);
+          IS_AVAILABLE(id, result.earliest.available);
         },
 
         (error) => {
-          const id = "coldstorage";
-
           console.error("coldStorageRes", error);
-          // setColdStorageLoading(false);
-          // setColdStorageErr(error);
-
           LOADING(id);
           ERROR(id, error);
-          // setColdStorageRes(error);
         }
       );
   };
 
   const reqGiant = (postCode) => {
+    const id = "giant";
     fetch(`${process.env.REACT_APP_GIANT_URL}?postcode=${postCode}`)
       .then((res) => res.json())
       .then(
         (result) => {
-          const id = "coldstorage";
-
           console.log("giantRes", result);
-          // setGiantLoading(false);
-          // setGiantRes(result);
-
           LOADING(id);
           RESPONSE(id, result);
+          IS_AVAILABLE(id, result.earliest.available);
         },
 
         (error) => {
-          const id = "coldstorage";
           console.error("giantRes", error);
-          // setGiantLoading(false);
-          // setGiantErr(error);
           LOADING(id);
           ERROR(id, error);
-          // setGiantRes(error);
         }
       );
   };
@@ -352,23 +330,24 @@ function App() {
         </SnackbarProvider>
         {isItemCardsVisible && (
           <div className="DeliveryStatusItems">
-            {STORES.map((store) => (
+            {STORES.map((store, id) => (
               <DeliveryStatusItem
+                key={id}
                 name={store.name}
                 formSubmitted={formSubmitted}
                 loading={store.loading}
                 res={store.response}
                 dataCheck={store.dataCheck}
                 error={store.error}
-                isUnserviceable={store.serviceable}
+                isUnserviceable={store.isUnserviceable}
                 shoppingCart={store.url}
               />
             ))}
 
             <DeliveryStatusItemStatic
-              name={stores.redmart.name}
-              site={stores.redmart.site}
-              href={stores.redmart.url}
+              name={redmart.name}
+              site={redmart.site}
+              href={redmart.url}
               formSubmitted={formSubmitted}
             />
           </div>
