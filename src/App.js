@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import ReactGA from "react-ga";
 import SnackbarProvider from "react-simple-snackbar";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaPeopleCarry } from "react-icons/fa";
 
 //
 import "./App.css";
 
 // for spinner
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import DATA from "./store/data";
 import DeliveryStatusItem from "./components/DeliveryStatusItem";
 import DeliveryStatusItemStatic from "./components/DeliveryStatusItemStatic";
 import TitleCard from "./components/TitleCard";
@@ -95,6 +96,73 @@ function App() {
   const [giantRes, setGiantRes] = useState(null);
   const [giantErr, setGiantErr] = useState(null);
 
+  const reducer = (DATA, action) => {
+    if (action.type == "LOAD_ALL") {
+      return DATA.map((store) => {
+        store.loading = true;
+        return store;
+      });
+    }
+
+    if (action.type == "LOADING") {
+      return DATA.map((store) => {
+        if (store.id == action.payload) {
+          store.loading = false;
+        }
+        return store;
+      });
+    }
+
+    if (action.type == "RESPONSE") {
+      return DATA.map((store) => {
+        if (store.id == action.payload.name) {
+          store.response = action.payload.response;
+        }
+        return store;
+      });
+    }
+
+    if (action.type == "ERROR") {
+      return DATA.map((store) => {
+        if (store.id == action.payload.name) {
+          store.error = action.payload.response;
+        }
+        return store;
+      });
+    }
+
+    if (action.type == "SERVICEABLE") {
+      return DATA.map((store) => {
+        if (store.id == action.payload.name) {
+          store.isserviceable = true;
+        }
+        return store;
+      });
+    }
+  };
+
+  const [STORES, dispatch] = useReducer(reducer, DATA);
+
+  function LOAD_ALL() {
+    dispatch({ type: "LOAD_ALL" });
+  }
+
+  function LOADING(name) {
+    dispatch({ type: "LOADING", payload: name });
+  }
+
+  function RESPONSE(name, response) {
+    dispatch({ type: "RESPONSE", payload: { name, response } });
+  }
+
+  function ERROR(name, response) {
+    dispatch({ type: "ERROR", payload: { name, response } });
+  }
+
+  function SERVICEABLE(name, response) {
+    dispatch({ type: "SERVICEABLE", payload: { name, response } });
+  }
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
@@ -106,10 +174,7 @@ function App() {
 
       setItemCardsVisible(true);
 
-      setNtucLoading(true);
-      setShengShongLoading(true);
-      setColdStorageLoading(true);
-      setGiantLoading(true);
+      LOAD_ALL();
 
       delayFunction(); // setFormSubmitted(true);
 
@@ -149,11 +214,14 @@ function App() {
       .then((res) => res.json())
       .then(
         (result) => {
+          const id = "ntuc";
           console.log("ntucStoreRes", result);
-          setNtucStoreRes(result);
+          RESPONSE(id, result);
+
+          // setNtucStoreRes(result);
 
           const storeId = result && result.data && result.data.store.id;
-          setNtucStoreId(storeId);
+          // setNtucStoreId(storeId);
 
           if (storeId) {
             console.log("ntuc storeId", storeId);
@@ -164,25 +232,28 @@ function App() {
               .then((res) => res.json())
               .then(
                 (result) => {
-                  setNtucLoading(false);
-                  setNtucSlotRes(result);
+                  LOADING(id);
+                  RESPONSE(id, result);
                   console.log("ntucSlotRes", result);
                 },
                 (error) => {
-                  setNtucLoading(false);
-                  // setNtucSlotRes(error);
-                  setNtucSlotErr(error);
+                  LOADING(id);
+                  RESPONSE(id, error);
+                  ERROR(id, error);
                   console.error("ntucSlotRes", error);
                 }
               );
           } else {
-            setNtucUnserviceable(true);
-            setNtucLoading(false);
+            SERVICEABLE(id, false);
+            LOADING(id);
             console.log("ntucSlotRes", "NTUC does not serve this area omg");
           }
         },
         (error) => {
-          setNtucStoreRes(error);
+          const id = "ntuc";
+
+          // setNtucStoreRes(error);
+          RESPONSE(id, error);
         }
       );
   };
@@ -198,14 +269,22 @@ function App() {
       .then((res) => res.json())
       .then(
         (result) => {
+          const id = "shengshiong";
+
           console.log("shengShiongRes", result);
-          setShengShongLoading(false);
-          setShengShiongRes(result);
+          LOADING(id);
+          RESPONSE(id, result);
+          // setShengShongLoading(false);
+          // setShengShiongRes(result);
         },
         (error) => {
+          const id = "shengshiong";
+
           console.error("shengShiongRes", error);
-          setShengShongLoading(false);
-          setShengShongErr(error);
+          LOADING(id);
+          ERROR(id, error);
+          // setShengShongLoading(false);
+          // setShengShongErr(error);
           // setShengShiongRes(error);
         }
       );
@@ -230,15 +309,25 @@ function App() {
       .then((res) => res.json())
       .then(
         (result) => {
+          const id = "coldstorage";
+
           console.log("coldStorageRes", result);
-          setColdStorageLoading(false);
-          setColdStorageRes(result);
+          // setColdStorageLoading(false);
+          // setColdStorageRes(result);
+
+          LOADING(id);
+          RESPONSE(id, result);
         },
 
         (error) => {
+          const id = "coldstorage";
+
           console.error("coldStorageRes", error);
-          setColdStorageLoading(false);
-          setColdStorageErr(error);
+          // setColdStorageLoading(false);
+          // setColdStorageErr(error);
+
+          LOADING(id);
+          ERROR(id, error);
           // setColdStorageRes(error);
         }
       );
@@ -249,15 +338,23 @@ function App() {
       .then((res) => res.json())
       .then(
         (result) => {
+          const id = "coldstorage";
+
           console.log("giantRes", result);
-          setGiantLoading(false);
-          setGiantRes(result);
+          // setGiantLoading(false);
+          // setGiantRes(result);
+
+          LOADING(id);
+          RESPONSE(id, result);
         },
 
         (error) => {
+          const id = "coldstorage";
           console.error("giantRes", error);
-          setGiantLoading(false);
-          setGiantErr(error);
+          // setGiantLoading(false);
+          // setGiantErr(error);
+          LOADING(id);
+          ERROR(id, error);
           // setGiantRes(error);
         }
       );
@@ -276,55 +373,31 @@ function App() {
             isPostCodeInvalid={isPostCodeInvalid}
           />
         </SnackbarProvider>
+        {/* <div>
+          {state.map((store, idx) => (
+            <div key={idx}>
+              <div>{store.name + idx}</div>
+              <div>
+                <button onClick={() => LOAD_ALL(store.name)}>loading</button>
+              </div>
+            </div>
+          ))}
+        </div> */}
 
         {isItemCardsVisible && (
           <div className="DeliveryStatusItems">
-            <DeliveryStatusItem
-              name={stores.ntuc.name}
-              formSubmitted={formSubmitted}
-              loading={isNtucLoading}
-              res={ntucSlotRes}
-              dataCheck={ntucSlotRes && ntucSlotRes.data.available}
-              error={ntucSlotErr}
-              isUnserviceable={isNtucUnserviceable}
-              shoppingCart={stores.ntuc.url}
-            />
-
-            <DeliveryStatusItem
-              name={stores.coldStorage.name}
-              formSubmitted={formSubmitted}
-              loading={isColdStorageLoading}
-              res={coldStorageRes}
-              dataCheck={coldStorageRes && coldStorageRes.earliest.available}
-              error={coldStorageErr}
-              shoppingCart={stores.coldStorage.url}
-            />
-
-            <DeliveryStatusItem
-              name={stores.giant.name}
-              formSubmitted={formSubmitted}
-              loading={isGiantLoading}
-              res={giantRes}
-              dataCheck={giantRes && giantRes.earliest.available}
-              error={giantErr}
-              shoppingCart={stores.giant.url}
-            />
-
-            <DeliveryStatusItem
-              name={stores.shengShiong.name}
-              formSubmitted={formSubmitted}
-              loading={isShengShiongLoading}
-              res={shengShiongRes}
-              dataCheck={
-                shengShiongRes && shengShiongRes.result !== "No more timeslots."
-              }
-              error={
-                shengShiongErr ||
-                (shengShiongRes &&
-                  shengShiongRes.response === "Please try again.")
-              }
-              shoppingCart={stores.shengShiong.url}
-            />
+            {STORES.map((store, idx) => (
+              <DeliveryStatusItem
+                name={store.name}
+                formSubmitted={formSubmitted}
+                loading={store.loading}
+                res={store.response}
+                dataCheck={store.dataCheck}
+                error={store.error}
+                isUnserviceable={store.serviceable}
+                shoppingCart={store.url}
+              />
+            ))}
 
             <DeliveryStatusItemStatic
               name={stores.redmart.name}
