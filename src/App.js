@@ -44,14 +44,14 @@ ReactGA.pageview(window.location.pathname + window.location.search);
 
 function App() {
   const localStoragePostCode = localStorage.getItem("postCode");
-  console.info("localStoragePostCode", localStoragePostCode);
+  // console.info("localStoragePostCode", localStoragePostCode);
 
   const localStoragePostCodeRememberPref =
     localStorage.getItem("postCodeRememberPref") === "1";
-  console.info(
-    "localStoragePostCodeRememberPref",
-    localStoragePostCodeRememberPref
-  );
+  // console.info(
+  //   "localStoragePostCodeRememberPref",
+  //   localStoragePostCodeRememberPref
+  // );
 
   // global
   const [isItemCardsVisible, setItemCardsVisible] = useState(false);
@@ -75,6 +75,7 @@ function App() {
   // ntuc
   const [isNtucLoading, setNtucLoading] = useState(false);
   const [ntucStoreRes, setNtucStoreRes] = useState(null); // eslint-disable-line no-unused-vars
+  const [ntucStoreErr, setNtucStoreErr] = useState(null);
   const [ntucStoreId, setNtucStoreId] = useState(null); // eslint-disable-line no-unused-vars
   const [ntucSlotRes, setNtucSlotRes] = useState(null);
   const [ntucSlotErr, setNtucSlotErr] = useState(null);
@@ -182,7 +183,9 @@ function App() {
           }
         },
         (error) => {
-          setNtucStoreRes(error);
+          setNtucStoreErr(error);
+          setNtucLoading(false);
+          console.error("ntucSlotRes", error);
         }
       );
   };
@@ -280,17 +283,6 @@ function App() {
         {isItemCardsVisible && (
           <div className="DeliveryStatusItems">
             <DeliveryStatusItem
-              name={stores.ntuc.name}
-              formSubmitted={formSubmitted}
-              loading={isNtucLoading}
-              res={ntucSlotRes}
-              dataCheck={ntucSlotRes && ntucSlotRes.data.available}
-              error={ntucSlotErr}
-              isUnserviceable={isNtucUnserviceable}
-              shoppingCart={stores.ntuc.url}
-            />
-
-            <DeliveryStatusItem
               name={stores.coldStorage.name}
               formSubmitted={formSubmitted}
               loading={isColdStorageLoading}
@@ -308,6 +300,17 @@ function App() {
               dataCheck={giantRes && giantRes.earliest.available}
               error={giantErr}
               shoppingCart={stores.giant.url}
+            />
+
+            <DeliveryStatusItem
+              name={stores.ntuc.name}
+              formSubmitted={formSubmitted}
+              loading={isNtucLoading}
+              res={ntucSlotRes}
+              dataCheck={ntucSlotRes && ntucSlotRes.data.available}
+              error={ntucSlotErr || ntucStoreErr}
+              isUnserviceable={isNtucUnserviceable}
+              shoppingCart={stores.ntuc.url}
             />
 
             <DeliveryStatusItem

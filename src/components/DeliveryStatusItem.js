@@ -18,7 +18,7 @@ const NotAvaliableIcon = () => (
 
 const AvailableIcon = () => (
   <IconContext.Provider
-    value={{ color: "#63d880", size: 42, className: "react-icons-icon" }}
+    value={{ color: "#00C851", size: 42, className: "react-icons-icon" }}
   >
     <div style={{ paddingTop: 6.4 }}>
       <FaCheck />
