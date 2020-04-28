@@ -30,7 +30,7 @@ const data = [
     error: {},
   },
   {
-    id: "redmart",
+    id: "giant",
     name: "Giant",
     url: "https://giant.sg/checkout/cart",
     loading: false,
