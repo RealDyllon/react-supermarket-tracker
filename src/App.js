@@ -27,14 +27,14 @@ ReactGA.pageview(window.location.pathname + window.location.search);
 
 function App() {
   const localStoragePostCode = localStorage.getItem("postCode");
-  console.info("localStoragePostCode", localStoragePostCode);
+  // console.info("localStoragePostCode", localStoragePostCode);
 
   const localStoragePostCodeRememberPref =
     localStorage.getItem("postCodeRememberPref") === "1";
-  console.info(
-    "localStoragePostCodeRememberPref",
-    localStoragePostCodeRememberPref
-  );
+  // console.info(
+  //   "localStoragePostCodeRememberPref",
+  //   localStoragePostCodeRememberPref
+  // );
 
   // global
   const [isItemCardsVisible, setItemCardsVisible] = useState(false);
