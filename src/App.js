@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import ReactGA from "react-ga";
 import SnackbarProvider from "react-simple-snackbar";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaPeopleCarry } from "react-icons/fa";
 
 //
 import "./App.css";
 
 // for spinner
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import DATA from "./store/data";
 import DeliveryStatusItem from "./components/DeliveryStatusItem";
 import DeliveryStatusItemStatic from "./components/DeliveryStatusItemStatic";
 import TitleCard from "./components/TitleCard";
@@ -15,28 +16,10 @@ import { IconContext } from "react-icons";
 
 const delay = require("delay");
 
-const stores = {
-  ntuc: {
-    name: "NTUC FairPrice",
-    url: "https://www.fairprice.com.sg/cart",
-  },
-  shengShiong: {
-    name: "Sheng Shiong",
-    url: "https://www.allforyou.sg/cart",
-  },
-  coldStorage: {
-    name: "Cold Storage",
-    url: "https://coldstorage.com.sg/checkout/cart",
-  },
-  giant: {
-    name: "Giant",
-    url: "https://giant.sg/checkout/cart",
-  },
-  redmart: {
-    name: "Redmart",
-    site: "redmart.com",
-    url: "https://redmart-delivery-schedule.lazada.sg",
-  },
+const redmart = {
+  name: "Redmart",
+  site: "redmart.com",
+  url: "https://redmart-delivery-schedule.lazada.sg",
 };
 
 ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_ID);
@@ -72,29 +55,89 @@ function App() {
   //   false
   // );
 
-  // ntuc
-  const [isNtucLoading, setNtucLoading] = useState(false);
-  const [ntucStoreRes, setNtucStoreRes] = useState(null); // eslint-disable-line no-unused-vars
-  const [ntucStoreErr, setNtucStoreErr] = useState(null);
-  const [ntucStoreId, setNtucStoreId] = useState(null); // eslint-disable-line no-unused-vars
-  const [ntucSlotRes, setNtucSlotRes] = useState(null);
-  const [ntucSlotErr, setNtucSlotErr] = useState(null);
-  const [isNtucUnserviceable, setNtucUnserviceable] = useState(false);
+  const reducer = (DATA, action) => {
+    if (action.type == "LOAD_ALL") {
+      return DATA.map((store) => {
+        store.loading = true;
+        return store;
+      });
+    }
 
-  // sheng shiong
-  const [isShengShiongLoading, setShengShongLoading] = useState(false);
-  const [shengShiongRes, setShengShiongRes] = useState(null);
-  const [shengShiongErr, setShengShongErr] = useState(null);
+    if (action.type == "LOADING") {
+      return DATA.map((store) => {
+        if (store.id == action.payload) {
+          store.loading = false;
+        }
+        return store;
+      });
+    }
 
-  // cold storage
-  const [isColdStorageLoading, setColdStorageLoading] = useState(false);
-  const [coldStorageRes, setColdStorageRes] = useState(null);
-  const [coldStorageErr, setColdStorageErr] = useState(null);
+    if (action.type == "RESPONSE") {
+      return DATA.map((store) => {
+        if (store.id == action.payload.id) {
+          store.response = action.payload.response;
+        }
+        return store;
+      });
+    }
 
-  // giant
-  const [isGiantLoading, setGiantLoading] = useState(false);
-  const [giantRes, setGiantRes] = useState(null);
-  const [giantErr, setGiantErr] = useState(null);
+    if (action.type == "ERROR") {
+      return DATA.map((store) => {
+        if (store.id == action.payload.id) {
+          store.error = action.payload.response;
+        }
+        return store;
+      });
+    }
+
+    if (action.type == "SET_UNSERVICEABLE") {
+      return DATA.map((store) => {
+        if (store.id == action.payload.id) {
+          store.isUnserviceable = true;
+        }
+        return store;
+      });
+    }
+
+    if (action.type == "IS_AVAILABLE") {
+      return DATA.map((store) => {
+        if (store.id == action.payload.id) {
+          console.log("Store", store.id);
+          console.log("Response", action.payload.response);
+
+          store.dataCheck = true;
+          store.error = false;
+        }
+        return store;
+      });
+    }
+  };
+
+  const [STORES, dispatch] = useReducer(reducer, DATA);
+
+  function LOAD_ALL() {
+    dispatch({ type: "LOAD_ALL" });
+  }
+
+  function LOADING(id) {
+    dispatch({ type: "LOADING", payload: id });
+  }
+
+  function RESPONSE(id, response) {
+    dispatch({ type: "RESPONSE", payload: { id, response } });
+  }
+
+  function ERROR(id, response) {
+    dispatch({ type: "ERROR", payload: { id, response } });
+  }
+
+  function SET_UNSERVICEABLE(id) {
+    dispatch({ type: "SET_UNSERVICEABLE", payload: id });
+  }
+
+  function IS_AVAILABLE(id, response) {
+    dispatch({ type: "IS_AVAILABLE", payload: { id, response } });
+  }
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -107,10 +150,7 @@ function App() {
 
       setItemCardsVisible(true);
 
-      setNtucLoading(true);
-      setShengShongLoading(true);
-      setColdStorageLoading(true);
-      setGiantLoading(true);
+      LOAD_ALL();
 
       delayFunction(); // setFormSubmitted(true);
 
@@ -144,6 +184,7 @@ function App() {
   };
 
   const reqNtuc = (postCode) => {
+    const id = "ntuc";
     fetch(
       `https://website-api.omni.fairprice.com.sg/api/serviceable-area?city=Singapore&pincode=${postCode}`
     )
@@ -151,10 +192,9 @@ function App() {
       .then(
         (result) => {
           console.log("ntucStoreRes", result);
-          setNtucStoreRes(result);
+          RESPONSE(id, result);
 
           const storeId = result && result.data && result.data.store.id;
-          setNtucStoreId(storeId);
 
           if (storeId) {
             console.log("ntuc storeId", storeId);
@@ -165,32 +205,37 @@ function App() {
               .then((res) => res.json())
               .then(
                 (result) => {
-                  setNtucLoading(false);
-                  setNtucSlotRes(result);
+                  LOADING(id);
+                  RESPONSE(id, result);
+                  const available = result.data.available;
+                  if (available) {
+                    IS_AVAILABLE(id, result);
+                  } else {
+                    SET_UNSERVICEABLE(id);
+                  }
                   console.log("ntucSlotRes", result);
                 },
                 (error) => {
-                  setNtucLoading(false);
-                  // setNtucSlotRes(error);
-                  setNtucSlotErr(error);
+                  LOADING(id);
+                  RESPONSE(id, error);
+                  ERROR(id, error);
                   console.error("ntucSlotRes", error);
                 }
               );
           } else {
-            setNtucUnserviceable(true);
-            setNtucLoading(false);
+            SET_UNSERVICEABLE(id);
+            LOADING(id);
             console.log("ntucSlotRes", "NTUC does not serve this area omg");
           }
         },
         (error) => {
-          setNtucStoreErr(error);
-          setNtucLoading(false);
-          console.error("ntucSlotRes", error);
+          RESPONSE(id, error);
         }
       );
   };
 
   const reqShengShiong = (postCode) => {
+    const id = "shengshiong";
     fetch(`${process.env.REACT_APP_SHENG_SHIONG_URL}?postcode=${postCode}`, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -202,19 +247,26 @@ function App() {
       .then(
         (result) => {
           console.log("shengShiongRes", result);
-          setShengShongLoading(false);
-          setShengShiongRes(result);
+          const response = result.response;
+          LOADING(id);
+          RESPONSE(id, result);
+          if (response !== "Please try again.") {
+            IS_AVAILABLE(id, true);
+          } else {
+            SET_UNSERVICEABLE(id);
+          }
         },
         (error) => {
           console.error("shengShiongRes", error);
-          setShengShongLoading(false);
-          setShengShongErr(error);
-          // setShengShiongRes(error);
+          LOADING(id);
+          ERROR(id, error);
         }
       );
   };
 
   const reqColdStorage = (postCode) => {
+    const id = "coldstorage";
+
     fetch(
       `${process.env.REACT_APP_COLD_STORAGE_URL}?postcode=${postCode}`,
 
@@ -234,34 +286,45 @@ function App() {
       .then(
         (result) => {
           console.log("coldStorageRes", result);
-          setColdStorageLoading(false);
-          setColdStorageRes(result);
+          LOADING(id);
+          RESPONSE(id, result);
+          const earliest = result.earliest.available;
+          if (earliest) {
+            IS_AVAILABLE(id, earliest);
+          } else {
+            SET_UNSERVICEABLE(id);
+          }
         },
 
         (error) => {
           console.error("coldStorageRes", error);
-          setColdStorageLoading(false);
-          setColdStorageErr(error);
-          // setColdStorageRes(error);
+          LOADING(id);
+          ERROR(id, error);
         }
       );
   };
 
   const reqGiant = (postCode) => {
+    const id = "giant";
     fetch(`${process.env.REACT_APP_GIANT_URL}?postcode=${postCode}`)
       .then((res) => res.json())
       .then(
         (result) => {
           console.log("giantRes", result);
-          setGiantLoading(false);
-          setGiantRes(result);
+          LOADING(id);
+          RESPONSE(id, result);
+          const earliest = result.earliest.available;
+          if (earliest) {
+            IS_AVAILABLE(id, earliest);
+          } else {
+            SET_UNSERVICEABLE(id);
+          }
         },
 
         (error) => {
           console.error("giantRes", error);
-          setGiantLoading(false);
-          setGiantErr(error);
-          // setGiantRes(error);
+          LOADING(id);
+          ERROR(id, error);
         }
       );
   };
@@ -279,60 +342,26 @@ function App() {
             isPostCodeInvalid={isPostCodeInvalid}
           />
         </SnackbarProvider>
-
         {isItemCardsVisible && (
           <div className="DeliveryStatusItems">
-            <DeliveryStatusItem
-              name={stores.coldStorage.name}
-              formSubmitted={formSubmitted}
-              loading={isColdStorageLoading}
-              res={coldStorageRes}
-              dataCheck={coldStorageRes && coldStorageRes.earliest.available}
-              error={coldStorageErr}
-              shoppingCart={stores.coldStorage.url}
-            />
-
-            <DeliveryStatusItem
-              name={stores.giant.name}
-              formSubmitted={formSubmitted}
-              loading={isGiantLoading}
-              res={giantRes}
-              dataCheck={giantRes && giantRes.earliest.available}
-              error={giantErr}
-              shoppingCart={stores.giant.url}
-            />
-
-            <DeliveryStatusItem
-              name={stores.ntuc.name}
-              formSubmitted={formSubmitted}
-              loading={isNtucLoading}
-              res={ntucSlotRes}
-              dataCheck={ntucSlotRes && ntucSlotRes.data.available}
-              error={ntucSlotErr || ntucStoreErr}
-              isUnserviceable={isNtucUnserviceable}
-              shoppingCart={stores.ntuc.url}
-            />
-
-            <DeliveryStatusItem
-              name={stores.shengShiong.name}
-              formSubmitted={formSubmitted}
-              loading={isShengShiongLoading}
-              res={shengShiongRes}
-              dataCheck={
-                shengShiongRes && shengShiongRes.result !== "No more timeslots."
-              }
-              error={
-                shengShiongErr ||
-                (shengShiongRes &&
-                  shengShiongRes.response === "Please try again.")
-              }
-              shoppingCart={stores.shengShiong.url}
-            />
+            {STORES.map((store, id) => (
+              <DeliveryStatusItem
+                key={id}
+                name={store.name}
+                formSubmitted={formSubmitted}
+                loading={store.loading}
+                res={store.response}
+                dataCheck={store.dataCheck}
+                error={store.error}
+                isUnserviceable={store.isUnserviceable}
+                shoppingCart={store.url}
+              />
+            ))}
 
             <DeliveryStatusItemStatic
-              name={stores.redmart.name}
-              site={stores.redmart.site}
-              href={stores.redmart.url}
+              name={redmart.name}
+              site={redmart.site}
+              href={redmart.url}
               formSubmitted={formSubmitted}
             />
           </div>
