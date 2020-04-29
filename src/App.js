@@ -101,16 +101,14 @@ function App() {
 
     if (action.type == "IS_AVAILABLE") {
       return DATA.map((store) => {
-        if (
-          store.id == action.payload.id &&
-          (action.payload.response === false ||
-            action.payload.response === null)
-        ) {
-          store.dataCheck = false;
-          store.error = null;
-        } else {
-          // store.dataCheck = action.payload.response;
+        if (store.id == action.payload.id)
+        {
+          console.log('Store', store.id)
+          console.log('Response', action.payload.response)
+
           store.dataCheck = true;
+          store.error = false;
+
         }
         return store;
       });
@@ -211,7 +209,12 @@ function App() {
                 (result) => {
                   LOADING(id);
                   RESPONSE(id, result);
-                  IS_AVAILABLE(id, result.data.available);
+                  const available = result.data.available;
+                  if(available) {
+                    IS_AVAILABLE(id, result);
+                  } else {
+                    SET_UNSERVICEABLE(id);
+                  }
                   console.log("ntucSlotRes", result);
                 },
                 (error) => {
@@ -250,6 +253,8 @@ function App() {
           RESPONSE(id, result);
           if (result !== "No more timeslots.") {
             IS_AVAILABLE(id, true);
+          } else {
+            SET_UNSERVICEABLE(id);
           }
         },
         (error) => {
@@ -284,7 +289,12 @@ function App() {
           console.log("coldStorageRes", result);
           LOADING(id);
           RESPONSE(id, result);
-          IS_AVAILABLE(id, result.earliest.available);
+          const earliest = result.earliest.available;
+          if(earliest) {
+            IS_AVAILABLE(id, earliest);
+          } else {
+            SET_UNSERVICEABLE(id);
+          }
         },
 
         (error) => {
@@ -304,7 +314,12 @@ function App() {
           console.log("giantRes", result);
           LOADING(id);
           RESPONSE(id, result);
-          IS_AVAILABLE(id, result.earliest.available);
+          const earliest = result.earliest.available;
+          if(earliest) {
+            IS_AVAILABLE(id, earliest);
+          } else {
+            SET_UNSERVICEABLE(id);
+          }
         },
 
         (error) => {
