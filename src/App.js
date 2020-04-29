@@ -101,14 +101,12 @@ function App() {
 
     if (action.type == "IS_AVAILABLE") {
       return DATA.map((store) => {
-        if (store.id == action.payload.id)
-        {
-          console.log('Store', store.id)
-          console.log('Response', action.payload.response)
+        if (store.id == action.payload.id) {
+          console.log("Store", store.id);
+          console.log("Response", action.payload.response);
 
           store.dataCheck = true;
           store.error = false;
-
         }
         return store;
       });
@@ -210,7 +208,7 @@ function App() {
                   LOADING(id);
                   RESPONSE(id, result);
                   const available = result.data.available;
-                  if(available) {
+                  if (available) {
                     IS_AVAILABLE(id, result);
                   } else {
                     SET_UNSERVICEABLE(id);
@@ -249,9 +247,10 @@ function App() {
       .then(
         (result) => {
           console.log("shengShiongRes", result);
+          const response = result.response;
           LOADING(id);
           RESPONSE(id, result);
-          if (result !== "No more timeslots.") {
+          if (response !== "Please try again.") {
             IS_AVAILABLE(id, true);
           } else {
             SET_UNSERVICEABLE(id);
@@ -290,7 +289,7 @@ function App() {
           LOADING(id);
           RESPONSE(id, result);
           const earliest = result.earliest.available;
-          if(earliest) {
+          if (earliest) {
             IS_AVAILABLE(id, earliest);
           } else {
             SET_UNSERVICEABLE(id);
@@ -315,7 +314,7 @@ function App() {
           LOADING(id);
           RESPONSE(id, result);
           const earliest = result.earliest.available;
-          if(earliest) {
+          if (earliest) {
             IS_AVAILABLE(id, earliest);
           } else {
             SET_UNSERVICEABLE(id);
